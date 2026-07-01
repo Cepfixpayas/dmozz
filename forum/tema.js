@@ -63,6 +63,7 @@
         clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.add('translate-y-32','opacity-0'),4000);
     }
     function buildUrl(q){ return `/forum/${q.id}/${q.category||'genel'}/${slugify(q.title)}.html`; }
+    function buildCategoryUrl(slug){ return `/forum/kategori/${encodeURIComponent(slug)}.html`; }
     function isStaff(){ return profile && (profile.role==='admin'||profile.role==='moderator'); }
     function isAdmin(){ return profile && profile.role==='admin'; }
     function verifiedBadge(p){ return p && p.verified ? `<span class="material-symbols-outlined verified-tick text-base align-middle" title="Onaylı üye" style="font-variation-settings:'FILL' 1">verified</span>` : ''; }
@@ -105,12 +106,15 @@
         // Temiz URL: /forum/{id}/{kategori}/{baslik}.html
         const path=window.location.pathname.replace(/^\/forum\/?/,'').replace(/\/$/,'');
         const match=path.match(/^(\d+)\/[^\/]+\/[^\/]+\.html$/);
+        // Temiz kategori URL'i: /forum/kategori/{slug}.html
+        const catMatch=path.match(/^kategori\/([^\/]+)\.html$/);
         // Eski biçimle geriye dönük uyumluluk: /forum/?s=12/genel/baslik.html
         const s=params.get('s');
         if(match){ renderQuestionDetail(match[1]); }
         else if(s){ renderQuestionDetail(s.split('/')[0]); }
+        else if(catMatch){ renderCategory(decodeURIComponent(catMatch[1])); }
         else if(profileUser){ renderUserProfile(profileUser); }
-        else if(cat){ renderCategory(cat); }
+        else if(cat){ renderCategory(cat); } // eski ?category= linkleri için geriye dönük uyumluluk
         else { renderHome(); }
     }
 
@@ -167,7 +171,7 @@
         // Sidebar
         const list=document.getElementById('categoryList');
         list.innerHTML = categoriesCache.map(c=>`
-            <li class="group flex items-center justify-between p-2 rounded-lg hover:bg-white transition-all cursor-pointer" onclick="window.location.href='/forum/?category=${c.slug}'">
+            <li class="group flex items-center justify-between p-2 rounded-lg hover:bg-white transition-all cursor-pointer" onclick="window.location.href='${buildCategoryUrl(c.slug)}'">
                 <span class="font-body-md text-on-surface-variant group-hover:text-primary transition-colors">${escapeHtml(c.name)}</span>
                 <span class="material-symbols-outlined text-sm text-outline group-hover:text-primary">chevron_right</span>
             </li>`).join('');
@@ -189,12 +193,12 @@
         document.getElementById('breadcrumbCurrent').innerText=name;
         document.getElementById('listTitle').innerText=name+' Soruları';
         document.title=`${name} Soruları | DMOZ Q&A`;
-        setMeta('canonicalLink','href',SITE_ORIGIN+'/forum/?category='+encodeURIComponent(slug));
-        setMeta('ogUrl','content',SITE_ORIGIN+'/forum/?category='+encodeURIComponent(slug));
+        setMeta('canonicalLink','href',SITE_ORIGIN+buildCategoryUrl(slug));
+        setMeta('ogUrl','content',SITE_ORIGIN+buildCategoryUrl(slug));
         setMeta('ogTitle','content',`${name} Soruları | DMOZ Q&A`);
         document.getElementById('json-ld-schema').textContent=JSON.stringify({
             "@context":"https://schema.org","@type":"CollectionPage","name":name+' Soruları',
-            "url":SITE_ORIGIN+'/forum/?category='+encodeURIComponent(slug),
+            "url":SITE_ORIGIN+buildCategoryUrl(slug),
             "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
         });
         loadLatestQuestions('created_at',slug);
@@ -684,7 +688,7 @@
             "@type":"BreadcrumbList",
             "itemListElement":[
                 { "@type":"ListItem","position":1,"name":"Anasayfa","item":SITE_ORIGIN+"/forum/" },
-                { "@type":"ListItem","position":2,"name":categoryName,"item":SITE_ORIGIN+"/forum/?category="+encodeURIComponent(q.category||'genel') },
+                { "@type":"ListItem","position":2,"name":categoryName,"item":SITE_ORIGIN+buildCategoryUrl(q.category||'genel') },
                 { "@type":"ListItem","position":3,"name":q.title,"item":url }
             ]
         };
