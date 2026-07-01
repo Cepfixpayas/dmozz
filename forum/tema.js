@@ -68,6 +68,46 @@
     function isAdmin(){ return profile && profile.role==='admin'; }
     function verifiedBadge(p){ return p && p.verified ? `<span class="material-symbols-outlined verified-tick text-base align-middle" title="Onaylı üye" style="font-variation-settings:'FILL' 1">verified</span>` : ''; }
 
+    /* ---------------- GÜVENLİK: BOT / SPAM / FLOOD (client-side önlem) ----------------
+       ÖNEMLİ: Bunlar gerçek sunucu taraflı korumanın (Supabase RLS + rate limit,
+       Edge Function tabanlı doğrulama, CAPTCHA vb.) yerini TUTMAZ. Statik bir
+       sitede yapılabilecek en iyi ilk savunma katmanıdır: bot tuzağı (honeypot)
+       ve istemci taraflı "flood" (art arda gönderim) sınırlaması. */
+    function honeypotTripped(id){
+        const el=document.getElementById(id);
+        return !!(el && el.value && el.value.trim().length>0);
+    }
+    const _floodTimestamps={};
+    function floodBlocked(key,minIntervalMs=4000){
+        const now=Date.now();
+        const last=_floodTimestamps[key]||0;
+        if(now-last<minIntervalMs) return true;
+        _floodTimestamps[key]=now;
+        return false;
+    }
+    /* Zengin metin (editör) içeriğini DOM'a basmadan önce temizler.
+       DOMPurify CDN'den yüklenemezse (ör. ağ engeli) güvenli tarafta kalıp
+       düz metne indirger — asla ham HTML'i olduğu gibi basmaz. */
+    let _purifyHooked=false;
+    function sanitizeRich(html){
+        if(!window.DOMPurify) return escapeHtml(html);
+        if(!_purifyHooked){
+            // Sadece YouTube embed iframe'lerine izin ver; başka her iframe kaldırılır
+            DOMPurify.addHook('uponSanitizeElement',(node,data)=>{
+                if(data.tagName==='iframe'){
+                    const src=node.getAttribute('src')||'';
+                    if(!/^https:\/\/www\.youtube\.com\/embed\//.test(src)) node.remove();
+                }
+            });
+            _purifyHooked=true;
+        }
+        return DOMPurify.sanitize(html||'',{
+            ALLOWED_TAGS:['b','strong','i','em','u','a','p','br','ul','ol','li','blockquote','img','video','source','h1','h2','h3','span','iframe'],
+            ALLOWED_ATTR:['href','src','alt','title','target','rel','class','controls','frameborder','allowfullscreen','width','height','style'],
+            ADD_TAGS:['iframe']
+        });
+    }
+
     /* ---------------- MODAL / DRAWER ---------------- */
     function toggleModal(id,show){
         const m=document.getElementById(id);
@@ -196,12 +236,43 @@
         setMeta('canonicalLink','href',SITE_ORIGIN+buildCategoryUrl(slug));
         setMeta('ogUrl','content',SITE_ORIGIN+buildCategoryUrl(slug));
         setMeta('ogTitle','content',`${name} Soruları | DMOZ Q&A`);
-        document.getElementById('json-ld-schema').textContent=JSON.stringify({
-            "@context":"https://schema.org","@type":"CollectionPage","name":name+' Soruları',
-            "url":SITE_ORIGIN+buildCategoryUrl(slug),
-            "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
-        });
+        const catDesc=`${name} kategorisindeki tüm soru ve cevaplar. DMOZ Q&A topluluğuyla ${name.toLowerCase()} hakkında soru sor, cevap ver.`;
+        let meta=document.querySelector('meta[name="description"]'); if(meta) meta.setAttribute('content',catDesc);
+        setMeta('ogDesc','content',catDesc); setMeta('twDesc','content',catDesc); setMeta('twTitle','content',`${name} Soruları | DMOZ Q&A`);
+        document.getElementById('json-ld-schema').textContent=JSON.stringify([
+            {
+                "@context":"https://schema.org","@type":"CollectionPage","name":name+' Soruları',
+                "url":SITE_ORIGIN+buildCategoryUrl(slug),"description":catDesc,"inLanguage":"tr-TR",
+                "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
+            },
+            {
+                "@context":"https://schema.org","@type":"BreadcrumbList",
+                "itemListElement":[
+                    { "@type":"ListItem","position":1,"name":"Anasayfa","item":SITE_ORIGIN+"/forum/" },
+                    { "@type":"ListItem","position":2,"name":name,"item":SITE_ORIGIN+buildCategoryUrl(slug) }
+                ]
+            }
+        ]);
         loadLatestQuestions('created_at',slug);
+    }
+
+    /* Görüntülenen soru listesinden ItemList şeması üretir (anasayfa/kategori).
+       Mevcut json-ld-schema içeriğine EKLENİR (üzerine yazmaz). */
+    function injectListSchema(questions,pageUrl){
+        if(!questions||!questions.length) return;
+        const itemList={
+            "@context":"https://schema.org","@type":"ItemList",
+            "itemListElement":questions.slice(0,20).map((q,i)=>({
+                "@type":"ListItem","position":i+1,"url":SITE_ORIGIN+buildUrl(q),"name":q.title
+            }))
+        };
+        const el=document.getElementById('json-ld-schema');
+        try{
+            const existing=JSON.parse(el.textContent||'[]');
+            const arr=Array.isArray(existing)?existing:[existing];
+            arr.push(itemList);
+            el.textContent=JSON.stringify(arr);
+        }catch(e){ el.textContent=JSON.stringify(itemList); }
     }
 
     async function loadLatestQuestions(sort='created_at',category=null){
@@ -216,6 +287,7 @@
             const ids=[...new Set(data.map(q=>q.author_id).filter(Boolean))];
             if(ids.length){ const { data:profs }=await supabaseClient.from('profiles').select('id,verified').in('id',ids); (profs||[]).forEach(p=>profMap[p.id]=p); }
             container.innerHTML=data.map(q=>renderQuestionCard(q,profMap[q.author_id])).join('');
+            injectListSchema(data,window.location.href);
         }catch(err){ console.error('[v0] list error',err); container.innerHTML=`<div class="text-error p-4 text-center">Veriler yüklenirken hata oluştu.</div>`; }
     }
 
@@ -257,7 +329,8 @@
             if(error||!q) throw error||new Error('not found');
             let authorP=null;
             if(q.author_id){ const { data }=await supabaseClient.from('profiles').select('username,avatar_url,verified,created_at,city,zodiac,profession').eq('id',q.author_id).maybeSingle(); authorP=data; }
-            injectSchema(q);
+            const { data:answersForSchema }=await supabaseClient.from('answers').select('content,author,created_at,votes').eq('question_id',q.id).order('votes',{ascending:false}).limit(50);
+            injectSchema(q,answersForSchema);
             document.getElementById('breadcrumbCurrent').innerText=q.title.slice(0,40);
             const liked = profile ? await hasLiked(q.id) : false;
             const c=document.getElementById('viewContainer');
@@ -266,7 +339,7 @@
                     <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
                         <div class="flex items-center gap-4 mb-6">
                             <a href="/forum/?u=${encodeURIComponent(q.author||'')}" class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-on-primary overflow-hidden shrink-0 border-2 border-primary-container/50 shadow-sm">
-                                ${authorP?.avatar_url?`<img src="${escapeHtml(authorP.avatar_url)}" class="w-full h-full object-cover" alt="@${escapeHtml(q.author||'')}"/>`:`<span class="material-symbols-outlined text-2xl">person</span>`}
+                                ${authorP?.avatar_url?`<img src="${escapeHtml(authorP.avatar_url)}" class="w-full h-full object-cover" alt="@${escapeHtml(q.author||'')}" loading="lazy" decoding="async"/>`:`<span class="material-symbols-outlined text-2xl">person</span>`}
                             </a>
                             <div class="flex-1 min-w-0">
                                 <a href="/forum/?u=${encodeURIComponent(q.author||'')}" class="font-bold text-sm flex items-center gap-1 hover:text-primary transition-colors w-fit">@${escapeHtml(q.author||'anonim')} ${verifiedBadge(authorP)}</a>
@@ -282,7 +355,7 @@
                         </div>
                         <h2 class="font-headline-lg font-bold text-on-surface mb-4 leading-tight">${escapeHtml(q.title)}</h2>
                         ${q.image_url?`<img src="${escapeHtml(q.image_url)}" class="rounded-xl mb-4 w-full" alt="${escapeHtml(q.title)}"/>`:''}
-                        <div class="qbody text-body-lg text-on-surface-variant mb-8 leading-relaxed">${q.content}</div>
+                        <div class="qbody text-body-lg text-on-surface-variant mb-8 leading-relaxed">${sanitizeRich(q.content)}</div>
                         <div class="flex gap-2 mb-8 flex-wrap">${q.tags?q.tags.split(',').map(t=>`<span class="bg-surface-container px-3 py-1 rounded text-xs text-primary font-bold">#${escapeHtml(t.trim())}</span>`).join(''):''}</div>
                         <div class="border-t border-outline-variant pt-6 flex justify-between items-center">
                             <div class="flex items-center gap-2">
@@ -324,7 +397,7 @@
             return `
             <div class="bg-white border border-outline-variant rounded-xl p-6 hover:shadow-sm transition-all">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary overflow-hidden shrink-0">${ap?.avatar_url?`<img src="${escapeHtml(ap.avatar_url)}" class="w-full h-full object-cover" alt=""/>`:`<span class="material-symbols-outlined text-sm">person</span>`}</div>
+                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary overflow-hidden shrink-0">${ap?.avatar_url?`<img src="${escapeHtml(ap.avatar_url)}" class="w-full h-full object-cover" alt="" loading="lazy" decoding="async"/>`:`<span class="material-symbols-outlined text-sm">person</span>`}</div>
                     <div class="flex-1"><span class="font-bold text-xs flex items-center gap-1">@${escapeHtml(a.author||'anonim')} ${verifiedBadge(ap)}</span><span class="text-outline text-[10px] block">${timeAgo(a.created_at)}</span></div>
                     ${(isStaff()||(profile&&profile.id===a.author_id))?`<button onclick="deleteAnswer(${a.id},${qid})" class="text-error/60 p-1"><span class="material-symbols-outlined text-sm">delete</span></button>`:''}
                 </div>
@@ -392,13 +465,34 @@
         if(!p){ renderHome(); return; }
         document.getElementById('breadcrumbCurrent').innerText='@'+p.username;
         document.title=`@${p.username} | DMOZ Q&A`;
-        setMeta('canonicalLink','href',SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username));
-        setMeta('ogUrl','content',SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username));
+        const profUrl=SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username);
+        const profDesc=(p.bio?stripHtml(p.bio).slice(0,155):`${p.full_name||p.username} adlı üyenin DMOZ Q&A profili — sorular, cevaplar ve topluluk katkıları.`);
+        setMeta('canonicalLink','href',profUrl);
+        setMeta('ogUrl','content',profUrl);
         setMeta('ogTitle','content',`@${p.username} | DMOZ Q&A`);
-        document.getElementById('json-ld-schema').textContent=JSON.stringify({
-            "@context":"https://schema.org","@type":"ProfilePage",
-            "mainEntity":{ "@type":"Person","name":p.full_name||p.username,"alternateName":p.username,"image":p.avatar_url,"url":SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username) }
-        });
+        setMeta('ogDesc','content',profDesc); setMeta('twDesc','content',profDesc); setMeta('twTitle','content',`@${p.username} | DMOZ Q&A`);
+        let pmeta=document.querySelector('meta[name="description"]'); if(pmeta) pmeta.setAttribute('content',profDesc);
+        if(p.avatar_url){ setMeta('ogImage','content',p.avatar_url); setMeta('twImage','content',p.avatar_url); }
+        const sameAs=[p.social_twitter,p.social_instagram,p.social_website].filter(Boolean);
+        document.getElementById('json-ld-schema').textContent=JSON.stringify([
+            {
+                "@context":"https://schema.org","@type":"ProfilePage","url":profUrl,"inLanguage":"tr-TR",
+                "mainEntity":{
+                    "@type":"Person","name":p.full_name||p.username,"alternateName":p.username,
+                    "image":p.avatar_url,"url":profUrl,"description":profDesc,
+                    ...(p.profession?{"jobTitle":p.profession}:{}),
+                    ...(p.city?{"address":{"@type":"PostalAddress","addressLocality":p.city}}:{}),
+                    ...(sameAs.length?{"sameAs":sameAs}:{})
+                }
+            },
+            {
+                "@context":"https://schema.org","@type":"BreadcrumbList",
+                "itemListElement":[
+                    { "@type":"ListItem","position":1,"name":"Anasayfa","item":SITE_ORIGIN+"/forum/" },
+                    { "@type":"ListItem","position":2,"name":"@"+p.username,"item":profUrl }
+                ]
+            }
+        ]);
         const { data:questions }=await supabaseClient.from('questions').select('*').eq('author_id',p.id).order('created_at',{ascending:false});
         const { data:answers }=await supabaseClient.from('answers').select('*,questions(title,id,category)').eq('author_id',p.id).order('created_at',{ascending:false});
         const online=isOnline(p.last_seen);
@@ -524,7 +618,7 @@
         list.innerHTML=profs.map(p=>{
             const info=partners[p.id];
             return `<div class="flex items-center gap-3 p-4 border-b border-outline-variant/30 hover:bg-surface-container-low cursor-pointer" onclick="openChatWith('${p.id}','${escapeHtml(p.username)}','${p.avatar_url}')">
-                <div class="relative"><img src="${p.avatar_url}" class="w-12 h-12 rounded-full object-cover" alt=""/><span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${isOnline(p.last_seen)?'online-dot':'offline-dot'}"></span></div>
+                <div class="relative"><img src="${p.avatar_url}" class="w-12 h-12 rounded-full object-cover" alt="" loading="lazy" decoding="async"/><span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${isOnline(p.last_seen)?'online-dot':'offline-dot'}"></span></div>
                 <div class="flex-1 min-w-0"><p class="font-bold text-sm">@${escapeHtml(p.username)}</p><p class="text-xs text-on-surface-variant truncate">${escapeHtml(info.last.content)}</p></div>
                 ${info.unread?`<span class="bg-primary text-white text-[10px] rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center font-bold">${info.unread}</span>`:''}
             </div>`;
@@ -564,7 +658,7 @@
         const { data }=await supabaseClient.from('profiles').select('*').order('created_at',{ascending:false});
         document.getElementById('adminUsers').innerHTML=(data||[]).map(u=>`
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex items-center gap-3">
-                <img src="${u.avatar_url}" class="w-10 h-10 rounded-full object-cover" alt=""/>
+                <img src="${u.avatar_url}" class="w-10 h-10 rounded-full object-cover" alt="" loading="lazy" decoding="async"/>
                 <div class="flex-1 min-w-0"><p class="font-bold text-sm flex items-center gap-1">@${escapeHtml(u.username)} ${verifiedBadge(u)}</p><p class="text-[10px] text-outline">${escapeHtml(u.email||'')} • ${u.role}${u.banned?' • <span class="text-error font-bold">YASAKLI</span>':''}</p></div>
                 ${isAdmin()?`<select onchange="setRole('${u.id}',this.value)" class="text-xs border border-outline-variant rounded px-1 py-1 bg-white">
                     <option value="user" ${u.role==='user'?'selected':''}>user</option>
@@ -634,7 +728,7 @@
         const ul=document.getElementById('onlineUsers');
         ul.innerHTML=(online&&online.length)?online.map(u=>`
             <li class="flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="window.location.href='/forum/?u=${u.username}'">
-                <div class="relative"><img src="${u.avatar_url}" class="w-7 h-7 rounded-full object-cover" alt=""/><span class="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-inverse-surface online-dot"></span></div>
+                <div class="relative"><img src="${u.avatar_url}" class="w-7 h-7 rounded-full object-cover" alt="" loading="lazy" decoding="async"/><span class="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-inverse-surface online-dot"></span></div>
                 <span class="text-xs text-white/80">@${escapeHtml(u.username)}</span>
             </li>`).join('') : '<li class="text-white/40 text-xs">Şu an çevrimiçi üye yok.</li>';
     }
@@ -664,25 +758,54 @@
     /* ---------------- SEO ŞEMASI ---------------- */
     function setMeta(id,attr,val){ const el=document.getElementById(id); if(el) el.setAttribute(attr,val); }
 
-    function injectSchema(q){
+    function injectSchema(q,answers){
         const url=SITE_ORIGIN+buildUrl(q);
         const desc=stripHtml(q.content).slice(0,160);
         const categoryName=(categoriesCache.find(c=>c.slug===q.category)||{}).name||q.category||'Genel';
+        const authorUrl=SITE_ORIGIN+'/forum/?u='+encodeURIComponent(q.author||'');
+        const answerList=(answers||[]).slice(0,50).map(a=>({
+            "@type":"Comment",
+            "text":stripHtml(a.content),
+            "dateCreated":a.created_at,
+            "upvoteCount":a.votes||0,
+            "author":{ "@type":"Person","name":a.author||"anonim","url":SITE_ORIGIN+'/forum/?u='+encodeURIComponent(a.author||'') }
+        }));
 
-        const qaSchema={
-            "@context":"https://schema.org",
-            "@type":"QAPage",
-            "mainEntity":{
-                "@type":"Question",
-                "name":q.title,
-                "text":stripHtml(q.content),
-                "answerCount":q.answer_count||0,
-                "upvoteCount":q.votes||0,
-                "datePublished":q.created_at,
-                "url":url,
-                "author":{ "@type":"Person", "name":q.author||"anonim", "url":SITE_ORIGIN+'/forum/?u='+encodeURIComponent(q.author||'') }
-            }
+        const questionNode={
+            "@type":"Question",
+            "name":q.title,
+            "text":stripHtml(q.content),
+            "answerCount":q.answer_count||0,
+            "upvoteCount":q.votes||0,
+            "datePublished":q.created_at,
+            "url":url,
+            "author":{ "@type":"Person","name":q.author||"anonim","url":authorUrl }
         };
+        if(answerList.length) questionNode.suggestedAnswer=answerList;
+
+        const qaSchema={ "@context":"https://schema.org","@type":"QAPage","mainEntity":questionNode };
+
+        // Forum tartışması olarak da işaretle (DiscussionForumPosting) — arama motorları
+        // ve forum-özel zengin sonuçlar için Question ile birlikte kullanılabilir.
+        const discussionSchema={
+            "@context":"https://schema.org",
+            "@type":"DiscussionForumPosting",
+            "headline":q.title,
+            "text":stripHtml(q.content),
+            "datePublished":q.created_at,
+            "dateModified":q.updated_at||q.created_at,
+            "url":url,
+            "commentCount":q.answer_count||0,
+            "interactionStatistic":[
+                { "@type":"InteractionCounter","interactionType":"https://schema.org/LikeAction","userInteractionCount":q.votes||0 },
+                { "@type":"InteractionCounter","interactionType":"https://schema.org/CommentAction","userInteractionCount":q.answer_count||0 }
+            ],
+            "author":{ "@type":"Person","name":q.author||"anonim","url":authorUrl },
+            "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
+        };
+        if(answerList.length) discussionSchema.comment=answerList;
+        if(q.image_url) discussionSchema.image={ "@type":"ImageObject","url":q.image_url,"contentUrl":q.image_url };
+
         const breadcrumbSchema={
             "@context":"https://schema.org",
             "@type":"BreadcrumbList",
@@ -692,11 +815,23 @@
                 { "@type":"ListItem","position":3,"name":q.title,"item":url }
             ]
         };
-        document.getElementById('json-ld-schema').textContent=JSON.stringify([qaSchema,breadcrumbSchema]);
+
+        const webPageSchema={
+            "@context":"https://schema.org","@type":"WebPage",
+            "name":q.title,"url":url,"description":desc,"inLanguage":"tr-TR",
+            "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
+        };
+
+        const schemas=[qaSchema,discussionSchema,breadcrumbSchema,webPageSchema];
+        if(q.image_url) schemas.push({ "@context":"https://schema.org","@type":"ImageObject","url":q.image_url,"contentUrl":q.image_url,"name":q.title });
+
+        document.getElementById('json-ld-schema').textContent=JSON.stringify(schemas);
 
         document.title=`${q.title} | DMOZ Q&A`;
         setMeta('canonicalLink','href',url);
         let meta=document.querySelector('meta[name="description"]'); if(meta) meta.setAttribute('content',desc);
+        let kw=document.querySelector('meta[name="keywords"]');
+        if(kw) kw.setAttribute('content',autoSeoKeywords(q.title,q.tags,categoryName));
         setMeta('ogType','content','article');
         setMeta('ogTitle','content',q.title);
         setMeta('ogDesc','content',desc);
@@ -706,7 +841,18 @@
         if(q.image_url){ setMeta('ogImage','content',q.image_url); setMeta('twImage','content',q.image_url); }
     }
 
+    /* Başlıktan otomatik SEO anahtar kelimesi üretimi: başlık kelimeleri + etiketler
+       + kategori adı birleştirilip yinelenenler/durak sözcükler ayıklanır. */
+    const TR_STOPWORDS=new Set(['ve','ile','bir','bu','şu','o','de','da','mi','mı','mu','mü','için','gibi','ama','fakat','veya','ya','ne','neden','nasıl','mı?','nedir','midir']);
+    function autoSeoKeywords(title,tags,categoryName){
+        const fromTitle=(title||'').toLowerCase().replace(/[^\wçğıöşüİ\s-]/g,' ').split(/\s+/).filter(w=>w.length>2&&!TR_STOPWORDS.has(w));
+        const fromTags=(tags||'').split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+        const all=[...new Set([...fromTags,...fromTitle,(categoryName||'').toLowerCase()])].filter(Boolean);
+        return all.slice(0,12).join(', ');
+    }
+
     function injectHomeSchema(){
+        const defaultDesc='DMOZ Q&A - Uzman topluluğuyla soru sor, cevap ver, bilgini paylaş. Yazılım, donanım, yapay zeka ve kariyer üzerine binlerce soru ve cevap.';
         const schema=[
             {
                 "@context":"https://schema.org",
@@ -725,13 +871,19 @@
                 "@type":"Organization",
                 "name":"DMOZ Q&A",
                 "url":SITE_ORIGIN+"/forum/",
-                "logo":SITE_ORIGIN+"/forum/og-cover.png"
+                "logo":{ "@type":"ImageObject","url":SITE_ORIGIN+"/forum/og-cover.png" }
+            },
+            {
+                "@context":"https://schema.org","@type":"WebPage",
+                "name":"DMOZ Q&A | Bilgi Paylaşım Platformu","url":SITE_ORIGIN+"/forum/",
+                "description":defaultDesc,"inLanguage":"tr-TR",
+                "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
             }
         ];
         document.getElementById('json-ld-schema').textContent=JSON.stringify(schema);
         document.title='DMOZ Q&A | Bilgi Paylaşım Platformu';
-        const defaultDesc='DMOZ Q&A - Uzman topluluğuyla soru sor, cevap ver, bilgini paylaş. Yazılım, donanım, yapay zeka ve kariyer üzerine binlerce soru ve cevap.';
         let meta=document.querySelector('meta[name="description"]'); if(meta) meta.setAttribute('content',defaultDesc);
+        let kw=document.querySelector('meta[name="keywords"]'); if(kw) kw.setAttribute('content','soru cevap, q&a, forum, bilgi paylaşımı, yazılım, yapay zeka');
         setMeta('canonicalLink','href',SITE_ORIGIN+'/forum/');
         setMeta('ogType','content','website');
         setMeta('ogTitle','content','DMOZ Q&A | Bilgi Paylaşım Platformu');
@@ -772,6 +924,8 @@
         document.getElementById('askQuestionForm')?.addEventListener('submit',async(e)=>{
             e.preventDefault();
             if(!requireAuth()) return;
+            if(honeypotTripped('askHoneypot')) return;
+            if(floodBlocked('ask',6000)){ showToast('Yavaşlayın','Çok hızlı gönderim yapıyorsunuz, birkaç saniye bekleyin.','hourglass_empty',true); return; }
             const title=document.getElementById('qTitle').value.trim();
             const content=document.getElementById('richEditor').innerHTML.trim();
             let category=document.getElementById('qCategory').value;
@@ -803,6 +957,8 @@
         // Giriş
         document.getElementById('loginForm').addEventListener('submit',async(e)=>{
             e.preventDefault();
+            if(honeypotTripped('loginHoneypot')) return; // bot yakalandı, sessizce yoksay
+            if(floodBlocked('login',2000)) return;
             let identifier=document.getElementById('loginIdentifier').value.trim();
             const password=document.getElementById('loginPassword').value;
             let email=identifier;
@@ -821,6 +977,8 @@
         // Kayıt
         document.getElementById('registerForm').addEventListener('submit',async(e)=>{
             e.preventDefault();
+            if(honeypotTripped('registerHoneypot')) return;
+            if(floodBlocked('register',5000)) return;
             const username=document.getElementById('regUsername').value.trim();
             const email=document.getElementById('regEmail').value.trim();
             const password=document.getElementById('regPassword').value;

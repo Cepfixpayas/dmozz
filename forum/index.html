@@ -8,9 +8,22 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
 <meta name="author" content="DMOZ Q&amp;A"/>
 <meta name="theme-color" content="#006b2c"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<!-- Güvenlik notu: Bu meta CSP, statik barındırmada (sunucu HTTP header'ı olmadan)
+     mümkün olan en katı ayardır. Gerçek koruma için sunucu/CDN seviyesinde
+     Content-Security-Policy, X-Content-Type-Options ve X-Frame-Options HTTP
+     header'larının da eklenmesi şiddetle önerilir (statik dosyadan eklenemezler). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://qfilqgbtubvafcnpwtqj.supabase.co wss://qfilqgbtubvafcnpwtqj.supabase.co; frame-ancestors 'self'; base-uri 'self'; object-src 'none'"/>
 <link rel="canonical" href="https://dmozz.eu.cc/forum/" id="canonicalLink"/>
 <link rel="alternate" hreflang="tr" href="https://dmozz.eu.cc/forum/"/>
+<link rel="alternate" hreflang="x-default" href="https://dmozz.eu.cc/forum/"/>
 <link rel="sitemap" type="application/xml" href="https://dmozz.eu.cc/forum/sitemap.xml"/>
+<!-- Performans: erken bağlantı kurulumu -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+<link rel="preconnect" href="https://qfilqgbtubvafcnpwtqj.supabase.co"/>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net"/>
+<link rel="dns-prefetch" href="https://cdn.tailwindcss.com"/>
 <!-- Open Graph -->
 <meta property="og:type" content="website" id="ogType"/>
 <meta property="og:site_name" content="DMOZ Q&amp;A"/>
@@ -34,6 +47,9 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <!-- Supabase Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- DOMPurify: kullanıcı tarafından oluşturulan zengin metin (rich text) içeriğini
+     ekrana basmadan önce temizler (stored-XSS önlemi) -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -299,6 +315,8 @@
 </div>
 <!-- Login Form -->
 <form class="p-6 space-y-4" id="loginForm">
+<!-- Bot tuzağı: gerçek kullanıcılar bu alanı görmez/doldurmaz -->
+<input type="text" name="website" id="loginHoneypot" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true"/>
 <div>
 <label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Kullanıcı adı veya E-posta</label>
 <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="loginIdentifier" required type="text" placeholder="kullaniciadi"/>
@@ -312,6 +330,7 @@
 </form>
 <!-- Register Form -->
 <form class="p-6 space-y-4 hidden" id="registerForm">
+<input type="text" name="website" id="registerHoneypot" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true"/>
 <div>
 <label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Kullanıcı Adı</label>
 <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="regUsername" required type="text" placeholder="kullaniciadi" minlength="3"/>
@@ -338,6 +357,7 @@
 <button aria-label="Kapat" class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full transition-colors" id="closeModalBtn">close</button>
 </div>
 <form class="p-6 space-y-5 overflow-y-auto scroll-thin" id="askQuestionForm">
+<input type="text" name="website" id="askHoneypot" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true"/>
 <div>
 <label class="block text-label-md font-label-md text-on-surface-variant mb-2">Konu Başlığı</label>
 <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qTitle" name="title" placeholder="Merak ettiğiniz konuyu kısaca belirtin..." required type="text"/>
@@ -484,4 +504,13 @@
 </div>
 
 <script src="tema.js" defer></script>
+<!-- Service Worker: statik varlıkları önbelleğe alır (offline destek + hızlı tekrar ziyaret).
+     Supabase API istekleri kasıtlı olarak önbelleklenmez (her zaman güncel veri). -->
+<script>
+    if('serviceWorker' in navigator){
+        window.addEventListener('load',()=>{
+            navigator.serviceWorker.register('/forum/sw.js').catch(err=>console.warn('[v0] SW kaydı başarısız',err));
+        });
+    }
+</script>
 </body></html>
