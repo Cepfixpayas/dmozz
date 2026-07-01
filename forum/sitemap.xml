@@ -6,27 +6,27 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/?category=yazilim</loc>
+    <loc>https://dmozz.eu.cc/forum/kategori/yazilim.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/?category=donanim</loc>
+    <loc>https://dmozz.eu.cc/forum/kategori/donanim.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/?category=yapay-zeka</loc>
+    <loc>https://dmozz.eu.cc/forum/kategori/yapay-zeka.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/?category=kariyer</loc>
+    <loc>https://dmozz.eu.cc/forum/kategori/kariyer.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/?category=genel</loc>
+    <loc>https://dmozz.eu.cc/forum/kategori/genel.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
