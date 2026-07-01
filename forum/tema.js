@@ -278,7 +278,7 @@
     async function loadLatestQuestions(sort='created_at',category=null){
         const container=document.getElementById('questionsContainer');
         try{
-            let query=supabaseClient.from('questions').select('*').order('pinned',{ascending:false}).order(sort==='popular'?'votes':'created_at',{ascending:false}).limit(20);
+            let query=supabaseClient.from('questions').select('*').order(sort==='popular'?'votes':'created_at',{ascending:false}).limit(20);
             if(category) query=query.eq('category',category);
             const { data,error }=await query;
             if(error) throw error;
@@ -294,17 +294,15 @@
     function renderQuestionCard(q,authorP){
         const url=buildUrl(q);
         const tags=q.tags?q.tags.split(',').map(t=>`<span class="bg-primary/5 text-primary px-2 py-0.5 rounded text-[10px] font-bold border border-primary/20">#${escapeHtml(t.trim())}</span>`).join(' '):'';
-        const pinnedBadge=q.pinned?`<span class="flex items-center gap-1 bg-primary text-white px-2 py-0.5 rounded-full text-[10px] font-bold"><span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1">push_pin</span>Sabitlenmiş</span>`:'';
         return `
-            <article class="bg-surface-container-lowest border ${q.pinned?'border-primary/50 ring-1 ring-primary/20 bg-primary/[0.03]':'border-outline-variant'} rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group" onclick="window.location.href='${url}'">
+            <article class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group" onclick="window.location.href='${url}'">
                 <div class="flex gap-4">
                     <div class="hidden sm:flex flex-col items-center justify-center bg-surface-container-low rounded-lg p-2 min-w-[60px] h-fit border border-outline-variant/20">
                         <span class="font-headline-md text-primary-container font-bold">${q.votes||0}</span>
                         <span class="text-[10px] text-on-surface-variant uppercase font-bold">BEĞENİ</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-2 text-xs flex-wrap">
-                            ${pinnedBadge}
+                        <div class="flex items-center gap-2 mb-2 text-xs">
                             <span class="font-bold text-primary">@${escapeHtml(q.author||'anonim')}</span>${verifiedBadge(authorP)}
                             <span class="text-outline">• ${timeAgo(q.created_at)}</span>
                         </div>
@@ -356,12 +354,8 @@
                                     ${authorP?.zodiac?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span>${escapeHtml(authorP.zodiac)}</span>`:''}
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1 shrink-0">
-                                ${isStaff()?`<button onclick="togglePin(${q.id},${!q.pinned})" class="${q.pinned?'text-primary bg-primary/10':'text-on-surface-variant hover:bg-surface-container'} p-2 rounded-full" title="${q.pinned?'Sabitlemeyi Kaldır':'Konuyu Sabitle'}"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' ${q.pinned?1:0}">push_pin</span></button>`:''}
-                                ${(isStaff()||(profile&&profile.id===q.author_id))?`<button onclick="deleteQuestion(${q.id})" class="text-error hover:bg-error/10 p-2 rounded-full"><span class="material-symbols-outlined">delete</span></button>`:''}
-                            </div>
+                            ${(isStaff()||(profile&&profile.id===q.author_id))?`<button onclick="deleteQuestion(${q.id})" class="text-error hover:bg-error/10 p-2 rounded-full shrink-0"><span class="material-symbols-outlined">delete</span></button>`:''}
                         </div>
-                        ${q.pinned?`<div class="flex items-center gap-1 text-primary text-xs font-bold mb-3"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">push_pin</span>Sabitlenmiş Konu</div>`:''}
                         <h2 class="font-headline-lg font-bold text-on-surface mb-4 leading-tight">${escapeHtml(q.title)}</h2>
                         ${q.image_url?`<img src="${escapeHtml(q.image_url)}" class="rounded-xl mb-4 w-full" alt="${escapeHtml(q.title)}"/>`:''}
                         <div class="qbody text-body-lg text-on-surface-variant mb-8 leading-relaxed">${sanitizeRich(q.content)}</div>
@@ -692,24 +686,13 @@
         else showToast('Hata','İşlem başarısız.','error',true);
     }
     async function loadAdminQuestions(){
-        const { data }=await supabaseClient.from('questions').select('*').order('pinned',{ascending:false}).order('created_at',{ascending:false}).limit(100);
+        const { data }=await supabaseClient.from('questions').select('*').order('created_at',{ascending:false}).limit(100);
         document.getElementById('adminQuestions').innerHTML=(data||[]).map(q=>`
-            <div class="bg-surface-container-lowest border ${q.pinned?'border-primary/50':'border-outline-variant'} rounded-xl p-3 flex items-center gap-3">
-                <div class="flex-1 min-w-0"><p class="font-bold text-sm truncate flex items-center gap-1">${q.pinned?`<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings:'FILL' 1">push_pin</span>`:''}${escapeHtml(q.title)}</p><p class="text-[10px] text-outline">@${escapeHtml(q.author||'')} • ${q.category||'-'} • ${q.answer_count||0} cevap</p></div>
-                <button onclick="togglePin(${q.id},${!q.pinned})" class="p-2 rounded-full ${q.pinned?'text-primary hover:bg-primary/10':'text-on-surface-variant hover:bg-surface-container'}" title="${q.pinned?'Sabitlemeyi Kaldır':'Sabitle'}"><span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' ${q.pinned?1:0}">push_pin</span></button>
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex items-center gap-3">
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm truncate">${escapeHtml(q.title)}</p><p class="text-[10px] text-outline">@${escapeHtml(q.author||'')} • ${q.category||'-'} • ${q.answer_count||0} cevap</p></div>
                 <button onclick="window.location.href='${buildUrl(q)}'" class="p-2 text-secondary"><span class="material-symbols-outlined text-lg">open_in_new</span></button>
                 <button onclick="adminDeleteQuestion(${q.id})" class="p-2 text-error hover:bg-error/10 rounded-full"><span class="material-symbols-outlined text-lg">delete</span></button>
             </div>`).join('');
-    }
-    /* ---------------- SABİTLEME (sadece admin/moderatör) ---------------- */
-    async function togglePin(id,pinned){
-        if(!isStaff()) return;
-        const { error }=await supabaseClient.from('questions').update({pinned}).eq('id',id);
-        if(error){ showToast('Hata','İşlem başarısız (sunucu izni gerekebilir).','error',true); return; }
-        showToast(pinned?'Sabitlendi':'Sabit Kaldırıldı',pinned?'Konu listelerde en üstte gösterilecek.':'Konu artık normal sırada.','push_pin');
-        const adminDrawer=document.getElementById('adminDrawer');
-        if(adminDrawer&&!adminDrawer.classList.contains('translate-x-full')) loadAdminQuestions();
-        route();
     }
     async function adminDeleteQuestion(id){
         if(!confirm('Bu konuyu silmek istediğinize emin misiniz?')) return;
