@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html class="light" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>DMOZ Q&amp;A | Bilgi Paylaşım Platformu</title>
+<meta name="description" content="DMOZ Q&amp;A - Uzman topluluğuyla soru sor, cevap ver, bilgini paylaş. Yazılım, donanım, yapay zeka ve kariyer üzerine binlerce soru ve cevap."/>
+<meta name="keywords" content="soru cevap, q&amp;a, forum, bilgi paylaşımı, yazılım, yapay zeka"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<meta name="author" content="DMOZ Q&amp;A"/>
+<meta name="theme-color" content="#006b2c"/>
+<link rel="canonical" href="https://dmozz.eu.cc/forum/" id="canonicalLink"/>
+<link rel="alternate" hreflang="tr" href="https://dmozz.eu.cc/forum/"/>
+<link rel="sitemap" type="application/xml" href="https://dmozz.eu.cc/forum/sitemap.xml"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website" id="ogType"/>
+<meta property="og:site_name" content="DMOZ Q&amp;A"/>
+<meta property="og:title" content="DMOZ Q&amp;A | Bilgi Paylaşım Platformu" id="ogTitle"/>
+<meta property="og:description" content="Uzman topluluğuyla soru sor, cevap ver, bilgini paylaş." id="ogDesc"/>
+<meta property="og:locale" content="tr_TR"/>
+<meta property="og:url" content="https://dmozz.eu.cc/forum/" id="ogUrl"/>
+<meta property="og:image" content="https://dmozz.eu.cc/forum/og-cover.png" id="ogImage"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="DMOZ Q&amp;A | Bilgi Paylaşım Platformu" id="twTitle"/>
+<meta name="twitter:description" content="Uzman topluluğuyla soru sor, cevap ver, bilgini paylaş." id="twDesc"/>
+<meta name="twitter:image" content="https://dmozz.eu.cc/forum/og-cover.png" id="twImage"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Supabase Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#00873a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#d3e4fe",
+                    "on-surface-variant": "#3e4a3d",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#006e2d",
+                    "secondary-container": "#316bf3",
+                    "inverse-primary": "#62df7d",
+                    "surface-container": "#e5eeff",
+                    "secondary": "#0051d5",
+                    "surface": "#f8f9ff",
+                    "outline-variant": "#bdcaba",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#00174b",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "on-primary-fixed": "#002109",
+                    "on-surface": "#0b1c30",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-background": "#0b1c30",
+                    "primary": "#006b2c",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-tertiary-container": "#fefcff",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary-fixed-variant": "#005320",
+                    "outline": "#6e7b6c",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#7ffc97",
+                    "tertiary-fixed": "#dae2fd",
+                    "tertiary": "#545c72",
+                    "on-secondary-container": "#fefcff",
+                    "on-primary-container": "#f7fff2",
+                    "inverse-on-surface": "#eaf1ff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "surface-container-high": "#dce9ff",
+                    "inverse-surface": "#213145",
+                    "secondary-fixed": "#dbe1ff",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-container": "#6c748b",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#cbdbf5",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#62df7d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "container-max": "1280px",
+                    "xs": "4px",
+                    "xl": "40px",
+                    "lg": "24px",
+                    "gutter": "20px",
+                    "base": "4px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-live { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+        body { min-height: max(884px, 100dvh); }
+        [onclick] { cursor: pointer; }
+        .verified-tick { color: #1d9bf0; }
+        .online-dot { background: #22c55e; }
+        .offline-dot { background: #94a3b8; }
+        .drawer { transition: transform .3s ease; }
+        .editor-content img, .editor-content video, .qbody img, .qbody video { max-width: 100%; border-radius: .5rem; margin: .5rem 0; }
+        #richEditor:empty:before { content: attr(data-placeholder); color: #94a3b8; }
+        .scroll-thin::-webkit-scrollbar { width: 6px; }
+        .scroll-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        #topHeader { box-shadow: none; }
+        #topHeader.scrolled { box-shadow: 0 4px 16px rgba(0,0,0,0.08); background: rgba(255,255,255,0.92); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden pb-20 md:pb-0">
+<a href="#viewContainer" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">İçeriğe atla</a>
+<!-- SEO Script Container -->
+<script id="json-ld-schema" type="application/ld+json"></script>
+
+<!-- ============ THEME SUBKEY (GÖMÜLÜ - SİLMEYİN) ============ -->
+<!-- dmoz-theme-key: DMOZ-QA-PRO-2024 :: embedded license, do not remove -->
+<meta name="dmoz-theme" content="DMOZ-QA-PRO-2024" data-subkey="dmoz_qa_embedded_key_v1"/>
+<!-- ========================================================= -->
+
+<!-- TopAppBar -->
+<header class="glass-effect text-primary fixed top-0 w-full z-50 border-b border-outline-variant/30 h-16 transition-shadow duration-300" id="topHeader">
+<div class="flex items-center justify-between px-3 sm:px-md max-w-container-max mx-auto h-full gap-2 sm:gap-4">
+<a class="flex items-center gap-2 group shrink-0" href="/forum/">
+<span class="material-symbols-outlined text-2xl sm:text-3xl group-hover:scale-110 transition-transform">forum</span>
+<h1 class="font-headline-lg text-lg sm:text-headline-lg font-bold text-primary leading-none tracking-tight whitespace-nowrap">DMOZ Q&amp;A</h1>
+</a>
+<div class="hidden md:flex flex-1 max-w-xl relative">
+<div class="w-full flex items-center bg-surface-container border border-outline-variant/50 rounded-full px-4 py-2 hover:border-primary focus-within:border-primary transition-all shadow-inner group">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-md font-body-md" id="ajaxSearch" placeholder="Dizin içinde soru ara..." type="text"/>
+<div class="hidden items-center gap-1 bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold" id="searchBadge">
+<span class="w-1.5 h-1.5 rounded-full bg-primary pulse-live"></span> CANLI
+</div>
+</div>
+<div class="hidden absolute top-12 left-0 w-full bg-white rounded-xl shadow-xl border border-outline-variant/20 p-2 z-50" id="searchResults"></div>
+</div>
+<div class="flex items-center gap-1 sm:gap-2 md:gap-3 shrink-0">
+<!-- Mobil Arama -->
+<button aria-label="Ara" class="md:hidden hover:bg-primary-container/20 transition-colors p-2 rounded-full active:scale-95" id="mobileSearchBtn">
+<span class="material-symbols-outlined text-2xl">search</span>
+</button>
+<!-- Messages -->
+<button aria-label="Mesajlar" class="relative max-md:hidden hover:bg-primary-container/20 transition-colors p-2 rounded-full active:scale-95 hidden" id="messagesBtn">
+<span class="material-symbols-outlined text-2xl">chat</span>
+<span class="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-error rounded-full border-2 border-surface hidden items-center justify-center text-[10px] text-white font-bold" id="messageBadge">0</span>
+</button>
+<!-- Notifications -->
+<button aria-label="Bildirimler" class="relative max-md:hidden hover:bg-primary-container/20 transition-colors p-2 rounded-full active:scale-95" id="notificationsBtn">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+<span class="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-error rounded-full border-2 border-surface hidden items-center justify-center text-[10px] text-white font-bold" id="notificationDot">0</span>
+</button>
+<!-- Admin -->
+<button aria-label="Yönetim" class="relative max-md:hidden hover:bg-primary-container/20 transition-colors p-2 rounded-full active:scale-95 hidden" id="adminBtn">
+<span class="material-symbols-outlined text-2xl">shield_person</span>
+</button>
+<!-- User Area -->
+<div id="userProfileArea" class="shrink-0"></div>
+</div>
+</div>
+</header>
+<!-- Mobil Arama Paneli -->
+<div class="md:hidden hidden fixed top-16 inset-x-0 z-40 bg-surface border-b border-outline-variant/30 p-3 shadow-lg" id="mobileSearchPanel">
+<div class="w-full flex items-center bg-surface-container border border-outline-variant/50 rounded-full px-4 py-2 focus-within:border-primary transition-all shadow-inner">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-md font-body-md" id="ajaxSearchMobile" placeholder="Dizin içinde soru ara..." type="text"/>
+</div>
+<div class="hidden mt-2 w-full bg-white rounded-xl shadow-xl border border-outline-variant/20 p-2" id="searchResultsMobile"></div>
+</div>
+
+<main class="max-w-container-max mx-auto px-md pt-24 pb-12" id="main-content">
+<nav class="flex items-center gap-2 text-label-md font-label-md text-secondary mb-6 overflow-x-auto whitespace-nowrap pb-2" id="breadcrumb">
+<a class="flex items-center gap-1 hover:text-primary transition-colors" href="/forum/"><span class="material-symbols-outlined text-sm">home</span></a>
+<span class="material-symbols-outlined text-xs text-outline">chevron_right</span>
+<span class="text-on-surface-variant font-bold" id="breadcrumbCurrent">Anasayfa</span>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<div class="lg:col-span-8 space-y-6" id="viewContainer">
+<section class="glass-effect rounded-xl p-8 border border-primary-container/20 shadow-md relative overflow-hidden group">
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-primary-fixed-dim/20 rounded-full blur-3xl group-hover:bg-primary-fixed-dim/30 transition-all duration-700"></div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary font-bold mb-2">Aklına takılan bir soru mu var?</h2>
+<p class="text-on-surface-variant font-body-md max-w-md">DMOZ topluluğunun binlerce uzman üyesi sana yardımcı olmak için burada.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container flex items-center justify-center gap-2 px-8 py-4 rounded-full font-headline-md text-headline-md shadow-lg hover:shadow-primary-container/20 hover:scale-105 transition-all active:scale-95 group/btn" id="openModalBtn">
+<span class="material-symbols-outlined group-hover/btn:rotate-180 transition-transform duration-500">add_circle</span> Soru Sor
+</button>
+</div>
+</section>
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+<div class="flex items-center gap-3">
+<span class="w-1.5 h-8 bg-primary rounded-full"></span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold" id="listTitle">Son Sorular</h3>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-lg">
+<button class="bg-white px-4 py-1.5 rounded shadow-sm text-label-md font-label-md text-primary transition-colors" id="sortNew">Yeni</button>
+<button class="px-4 py-1.5 rounded text-label-md font-label-md text-on-surface-variant hover:bg-white/50 transition-colors" id="sortPopular">Popüler</button>
+</div>
+</div>
+<div class="space-y-4" id="questionsContainer">
+<div class="h-32 bg-surface-container-low border border-dashed border-outline-variant/50 rounded-xl animate-pulse flex items-center justify-center text-on-surface-variant/40">Yükleniyor...</div>
+</div>
+</div>
+<aside class="lg:col-span-4 space-y-8">
+<div class="bg-gradient-to-br from-inverse-surface via-inverse-surface to-primary/20 text-surface rounded-2xl p-6 shadow-xl relative overflow-hidden border border-white/5">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+<div class="flex items-center justify-between mb-6 relative">
+<h5 class="font-headline-md text-headline-md font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary-container">query_stats</span>Topluluk Verileri</h5>
+<div class="flex items-center gap-1.5 bg-error/90 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest shrink-0">
+<span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span> CANLI
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 sm:gap-3 relative">
+<div class="p-3 sm:p-4 bg-white/10 rounded-xl border border-white/5 hover:bg-white/15 transition-colors text-center sm:text-left">
+<span class="material-symbols-outlined text-primary-container text-lg mb-1 hidden sm:inline-block">help</span>
+<p class="text-white/60 text-[10px] font-label-sm mb-0.5 uppercase tracking-tighter">Soru</p>
+<p class="text-xl sm:text-2xl font-bold font-headline-md leading-tight" id="statTotalQuestions">…</p>
+</div>
+<div class="p-3 sm:p-4 bg-white/10 rounded-xl border border-white/5 hover:bg-white/15 transition-colors text-center sm:text-left">
+<span class="material-symbols-outlined text-primary-container text-lg mb-1 hidden sm:inline-block">forum</span>
+<p class="text-white/60 text-[10px] font-label-sm mb-0.5 uppercase tracking-tighter">Cevap</p>
+<p class="text-xl sm:text-2xl font-bold font-headline-md leading-tight" id="statTotalAnswers">…</p>
+</div>
+<div class="p-3 sm:p-4 bg-white/10 rounded-xl border border-white/5 hover:bg-white/15 transition-colors text-center sm:text-left">
+<span class="material-symbols-outlined text-primary-container text-lg mb-1 hidden sm:inline-block">group</span>
+<p class="text-white/60 text-[10px] font-label-sm mb-0.5 uppercase tracking-tighter">Üye</p>
+<p class="text-xl sm:text-2xl font-bold font-headline-md leading-tight" id="statActiveExperts">…</p>
+</div>
+</div>
+<div class="mt-6 border-t border-white/10 pt-5 relative">
+<p class="font-label-md text-label-md text-white/80 mb-3 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full online-dot"></span>Çevrimiçi Üyeler</p>
+<ul class="space-y-1" id="onlineUsers"><li class="text-white/40 text-xs">Yükleniyor...</li></ul>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-6 border border-outline-variant/30">
+<h5 class="font-headline-md text-headline-md text-on-surface font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">account_tree</span> Kategoriler
+</h5>
+<ul class="space-y-1" id="categoryList"></ul>
+<a class="block w-full mt-4 text-center py-2 text-label-md font-label-md text-primary hover:underline transition-all" href="/forum/">Tüm Dizinleri Gör</a>
+</div>
+</aside>
+</div>
+</main>
+
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden bg-surface fixed bottom-0 w-full z-40 rounded-t-xl border-t border-outline-variant/50 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] flex justify-around items-center h-16 px-sm">
+<a class="flex flex-col items-center justify-center text-primary-container bg-primary-container/10 rounded-full px-4 py-1" href="/forum/">
+<span class="material-symbols-outlined">home</span><span class="font-label-sm text-label-sm">Anasayfa</span>
+</a>
+<button class="flex flex-col items-center justify-center text-on-surface-variant" id="mobileMsgBtn">
+<span class="material-symbols-outlined">chat</span><span class="font-label-sm text-label-sm">Mesaj</span>
+</button>
+<button aria-label="Soru Sor" class="flex flex-col items-center justify-center text-on-surface-variant -mt-10" id="mobileAskBtn">
+<div class="w-14 h-14 bg-primary-container rounded-full flex items-center justify-center shadow-lg border-4 border-surface">
+<span class="material-symbols-outlined text-on-primary-container text-3xl">add</span>
+</div>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant" id="mobileNotifBtn">
+<span class="material-symbols-outlined">notifications</span><span class="font-label-sm text-label-sm">Bildirim</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant" id="mobileProfileBtn">
+<span class="material-symbols-outlined">person</span><span class="font-label-sm text-label-sm">Profil</span>
+</button>
+</nav>
+
+<!-- ============ AUTH MODAL (Giriş / Kayıt) ============ -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" id="authModal">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/30">
+<div class="flex border-b border-outline-variant">
+<button class="flex-1 py-4 font-headline-md text-headline-md text-primary border-b-2 border-primary" id="tabLogin" data-tab="login">Giriş Yap</button>
+<button class="flex-1 py-4 font-headline-md text-headline-md text-on-surface-variant border-b-2 border-transparent" id="tabRegister" data-tab="register">Üye Ol</button>
+<button aria-label="Kapat" class="material-symbols-outlined p-4 hover:bg-surface-container transition-colors" id="closeAuthBtn">close</button>
+</div>
+<!-- Login Form -->
+<form class="p-6 space-y-4" id="loginForm">
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Kullanıcı adı veya E-posta</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="loginIdentifier" required type="text" placeholder="kullaniciadi"/>
+</div>
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Şifre</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="loginPassword" required type="password" placeholder="••••••••"/>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-3 rounded-lg font-headline-md text-headline-md shadow hover:bg-primary transition-all active:scale-95" type="submit">Giriş Yap</button>
+<button type="button" class="w-full text-center text-label-md font-label-md text-secondary hover:underline" id="forgotBtn">Şifremi Unuttum?</button>
+</form>
+<!-- Register Form -->
+<form class="p-6 space-y-4 hidden" id="registerForm">
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Kullanıcı Adı</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="regUsername" required type="text" placeholder="kullaniciadi" minlength="3"/>
+</div>
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">E-posta Adresi</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="regEmail" required type="email" placeholder="ornek@mail.com"/>
+</div>
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Şifre</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="regPassword" required type="password" placeholder="En az 6 karakter" minlength="6"/>
+</div>
+<p class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined verified-tick text-base">verified</span> Üye olunca otomatik mavi tik kazanırsın!</p>
+<button class="w-full bg-primary-container text-on-primary-container py-3 rounded-lg font-headline-md text-headline-md shadow hover:bg-primary transition-all active:scale-95" type="submit">Üye Ol</button>
+</form>
+</div>
+</div>
+
+<!-- ============ QUESTION MODAL (Zengin Editör) ============ -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" id="questionModal">
+<div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/30 flex flex-col max-h-[90vh]">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary font-bold">Yeni Konu / Soru Paylaş</h3>
+<button aria-label="Kapat" class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full transition-colors" id="closeModalBtn">close</button>
+</div>
+<form class="p-6 space-y-5 overflow-y-auto scroll-thin" id="askQuestionForm">
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-2">Konu Başlığı</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qTitle" name="title" placeholder="Merak ettiğiniz konuyu kısaca belirtin..." required type="text"/>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-2">Kategori</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qCategory" name="category"></select>
+</div>
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-2">Yeni Kategori (opsiyonel)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qNewCategory" placeholder="Kategori yoksa ekle..." type="text"/>
+</div>
+</div>
+<!-- Rich Editor Toolbar -->
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-2">İçerik</label>
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex flex-wrap items-center gap-1 bg-surface-container-low border-b border-outline-variant px-2 py-1.5">
+<button type="button" class="editor-tool p-2 rounded hover:bg-white" data-cmd="bold" title="Kalın"><span class="material-symbols-outlined text-lg">format_bold</span></button>
+<button type="button" class="editor-tool p-2 rounded hover:bg-white" data-cmd="italic" title="İtalik"><span class="material-symbols-outlined text-lg">format_italic</span></button>
+<button type="button" class="editor-tool p-2 rounded hover:bg-white" data-cmd="insertUnorderedList" title="Liste"><span class="material-symbols-outlined text-lg">format_list_bulleted</span></button>
+<button type="button" class="editor-tool p-2 rounded hover:bg-white" data-cmd="formatBlock" data-val="blockquote" title="Alıntı"><span class="material-symbols-outlined text-lg">format_quote</span></button>
+<span class="w-px h-5 bg-outline-variant mx-1"></span>
+<button type="button" class="p-2 rounded hover:bg-white" id="insertImageBtn" title="Resim Ekle"><span class="material-symbols-outlined text-lg">image</span></button>
+<button type="button" class="p-2 rounded hover:bg-white" id="insertVideoBtn" title="Video Ekle"><span class="material-symbols-outlined text-lg">smart_display</span></button>
+<button type="button" class="p-2 rounded hover:bg-white" id="insertLinkBtn" title="Bağlantı"><span class="material-symbols-outlined text-lg">link</span></button>
+</div>
+<div class="editor-content p-4 min-h-[160px] focus:outline-none text-on-surface" id="richEditor" contenteditable="true" data-placeholder="Sorunuzu detaylandırın, resim/video ekleyebilirsiniz..."></div>
+</div>
+</div>
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant mb-2">Etiketler</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qTags" name="tags" placeholder="virgül ile ayırın..." type="text"/>
+</div>
+<div class="border-t border-outline-variant bg-surface-container-low -mx-6 -mb-6 px-6 py-4 flex justify-end gap-3 mt-4 sticky bottom-0">
+<button class="px-6 py-2.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/20 transition-colors" id="cancelModalBtn" type="button">Vazgeç</button>
+<button class="bg-primary-container text-on-primary-container px-8 py-2.5 rounded-lg font-headline-md text-headline-md shadow hover:bg-primary transition-all active:scale-95" type="submit">Yayınla</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ============ DRAWERS (Bildirim / Mesaj / Profil / Admin) ============ -->
+<div class="fixed inset-0 z-[90] hidden bg-on-surface/40 backdrop-blur-sm" id="drawerOverlay"></div>
+
+<!-- Notifications Drawer -->
+<div class="drawer fixed top-0 right-0 h-full w-full max-w-sm bg-surface z-[95] shadow-2xl translate-x-full flex flex-col" id="notifDrawer">
+<div class="p-5 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary font-bold flex items-center gap-2"><span class="material-symbols-outlined">notifications</span> Bildirimler</h3>
+<button class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full close-drawer">close</button>
+</div>
+<div class="flex-1 overflow-y-auto scroll-thin p-3 space-y-2" id="notifList"></div>
+</div>
+
+<!-- Messages Drawer -->
+<div class="drawer fixed top-0 right-0 h-full w-full max-w-md bg-surface z-[95] shadow-2xl translate-x-full flex flex-col" id="msgDrawer">
+<div class="p-5 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary font-bold flex items-center gap-2"><span class="material-symbols-outlined" id="msgBackBtn">chat</span> <span id="msgDrawerTitle">Mesajlar</span></h3>
+<button class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full close-drawer">close</button>
+</div>
+<div class="flex-1 overflow-y-auto scroll-thin" id="msgConversations"></div>
+<div class="hidden flex-1 flex-col" id="msgThread">
+<div class="flex-1 overflow-y-auto scroll-thin p-4 space-y-3" id="msgThreadBody"></div>
+<form class="p-3 border-t border-outline-variant flex items-center gap-2" id="msgSendForm">
+<input class="flex-1 bg-surface-container-low border border-outline-variant rounded-full px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none" id="msgInput" placeholder="Mesaj yaz..." autocomplete="off"/>
+<button class="bg-primary-container text-on-primary-container w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-95" type="submit"><span class="material-symbols-outlined">send</span></button>
+</form>
+</div>
+</div>
+
+<!-- Admin Drawer -->
+<div class="drawer fixed top-0 right-0 h-full w-full max-w-lg bg-surface z-[95] shadow-2xl translate-x-full flex flex-col" id="adminDrawer">
+<div class="p-5 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-error font-bold flex items-center gap-2"><span class="material-symbols-outlined">shield_person</span> Yönetim Paneli</h3>
+<button class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full close-drawer">close</button>
+</div>
+<div class="flex border-b border-outline-variant text-sm">
+<button class="flex-1 py-3 font-bold text-primary border-b-2 border-primary admin-tab" data-atab="users">Üyeler</button>
+<button class="flex-1 py-3 font-bold text-on-surface-variant border-b-2 border-transparent admin-tab" data-atab="questions">Konular</button>
+<button class="flex-1 py-3 font-bold text-on-surface-variant border-b-2 border-transparent admin-tab" data-atab="categories">Kategoriler</button>
+</div>
+<div class="flex-1 overflow-y-auto scroll-thin p-4">
+<div id="adminUsers" class="space-y-2"></div>
+<div id="adminQuestions" class="space-y-2 hidden"></div>
+<div id="adminCategories" class="space-y-3 hidden">
+<form class="flex gap-2" id="adminAddCatForm">
+<input class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary" id="adminNewCat" placeholder="Yeni kategori adı..."/>
+<button class="bg-primary-container text-on-primary-container px-4 rounded-lg font-bold" type="submit">Ekle</button>
+</form>
+<div id="adminCatList" class="space-y-2"></div>
+</div>
+</div>
+</div>
+
+<!-- ============ EDIT PROFILE MODAL ============ -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" id="editProfileModal">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/30 flex flex-col max-h-[90vh]">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary font-bold">Profili Düzenle</h3>
+<button aria-label="Kapat" class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full" id="closeEditProfile">close</button>
+</div>
+<form class="p-6 space-y-4 overflow-y-auto scroll-thin" id="editProfileForm">
+<div class="flex items-center gap-4">
+<img id="editAvatarPreview" class="w-20 h-20 rounded-full object-cover border-2 border-primary-container" alt="Avatar"/>
+<div>
+<label class="bg-surface-container px-4 py-2 rounded-lg text-label-md font-label-md text-primary cursor-pointer hover:bg-surface-container-high transition-colors inline-flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">photo_camera</span> Avatar Yükle
+<input type="file" accept="image/*" class="hidden" id="avatarFile"/>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div><label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Ad Soyad</label><input id="epFullName" class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"/></div>
+<div><label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Şehir</label><input id="epCity" class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"/></div>
+<div><label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Burç</label>
+<select id="epZodiac" class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary">
+<option value="">Seçiniz</option><option>Koç</option><option>Boğa</option><option>İkizler</option><option>Yengeç</option><option>Aslan</option><option>Başak</option><option>Terazi</option><option>Akrep</option><option>Yay</option><option>Oğlak</option><option>Kova</option><option>Balık</option>
+</select></div>
+<div><label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Meslek</label><input id="epProfession" class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"/></div>
+</div>
+<div><label class="block text-label-md font-label-md text-on-surface-variant mb-1.5">Hakkımda</label><textarea id="epBio" rows="2" class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"></textarea></div>
+<p class="text-label-md font-label-md text-on-surface-variant font-bold pt-2">Sosyal Medya</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<input id="epTwitter" placeholder="Twitter/X" class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"/>
+<input id="epInstagram" placeholder="Instagram" class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"/>
+<input id="epWebsite" placeholder="Web sitesi" class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"/>
+</div>
+<div class="flex justify-end gap-3 pt-2">
+<button type="button" class="px-6 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-variant/20" id="cancelEditProfile">Vazgeç</button>
+<button type="submit" class="bg-primary-container text-on-primary-container px-8 py-2.5 rounded-lg font-headline-md text-headline-md shadow hover:bg-primary transition-all active:scale-95">Kaydet</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Toast -->
+<div class="fixed bottom-24 right-8 bg-inverse-surface text-surface px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-32 opacity-0 transition-all duration-500 z-[110]" id="toast">
+<span class="material-symbols-outlined text-primary-fixed" id="toastIcon">check_circle</span>
+<div class="flex flex-col">
+<p class="font-bold text-sm" id="toastTitle">İşlem Başarılı!</p>
+<p class="text-xs text-white/70" id="toastMessage"></p>
+</div>
+</div>
+
+<script>
+    /* ===================================================================
+       DMOZ Q&A - UYGULAMA MANTIĞI
+       =================================================================== */
+
+    // ---- YAPILANDIRMA ----
+    const SITE_ORIGIN = 'https://dmozz.eu.cc';
+    const SUPABASE_URL = 'https://qfilqgbtubvafcnpwtqj.supabase.co';
+    // ÖNEMLİ: Aşağıya kendi Supabase "anon public" anahtarınızı yapıştırın.
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmaWxxZ2J0dWJ2YWZjbnB3dHFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MjI4NDMsImV4cCI6MjA5ODM5ODg0M30.F72EjHi1Sr3bJy_tiXpJl3MD5RZqbLPhblvhzzvUDIY';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Durum
+    let currentUser = null;     // auth user
+    let profile = null;         // profiles satırı
+    let categoriesCache = [];
+    let activeChatUser = null;  // mesajlaşılan profil
+
+    /* ---------------- YARDIMCILAR ---------------- */
+    function slugify(text){
+        const map={ç:'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u','Ç':'c','Ğ':'g','İ':'i','Ö':'o','Ş':'s','Ü':'u'};
+        return (text||'').toString().toLowerCase().replace(/[çğıöşüÇĞİÖŞÜ]/g,m=>map[m]||m).trim()
+            .replace(/\s+/g,'-').replace(/[^\w-]+/g,'').replace(/--+/g,'-');
+    }
+    function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+    function timeAgo(date){
+        const s=Math.floor((new Date()-new Date(date))/1000);
+        let i=s/31536000; if(i>1)return Math.floor(i)+" yıl önce";
+        i=s/2592000; if(i>1)return Math.floor(i)+" ay önce";
+        i=s/86400; if(i>1)return Math.floor(i)+" gün önce";
+        i=s/3600; if(i>1)return Math.floor(i)+" saat önce";
+        i=s/60; if(i>1)return Math.floor(i)+" dk önce";
+        return "az önce";
+    }
+    function isOnline(lastSeen){ return lastSeen && (new Date()-new Date(lastSeen)) < 120000; }
+    function showToast(title,message,icon='check_circle',isError=false){
+        const t=document.getElementById('toast'),ic=document.getElementById('toastIcon');
+        document.getElementById('toastTitle').innerText=title;
+        document.getElementById('toastMessage').innerText=message||'';
+        ic.innerText=icon;
+        ic.classList.toggle('text-error',isError); ic.classList.toggle('text-primary-fixed',!isError);
+        t.classList.remove('translate-y-32','opacity-0');
+        clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.add('translate-y-32','opacity-0'),4000);
+    }
+    function buildUrl(q){ return `/forum/${q.id}/${q.category||'genel'}/${slugify(q.title)}.html`; }
+    function isStaff(){ return profile && (profile.role==='admin'||profile.role==='moderator'); }
+    function isAdmin(){ return profile && profile.role==='admin'; }
+    function verifiedBadge(p){ return p && p.verified ? `<span class="material-symbols-outlined verified-tick text-base align-middle" title="Onaylı üye" style="font-variation-settings:'FILL' 1">verified</span>` : ''; }
+
+    /* ---------------- MODAL / DRAWER ---------------- */
+    function toggleModal(id,show){
+        const m=document.getElementById(id);
+        m.classList.toggle('hidden',!show); m.classList.toggle('flex',show);
+        document.body.style.overflow=show?'hidden':'';
+    }
+    function openDrawer(id){
+        document.getElementById('drawerOverlay').classList.remove('hidden');
+        document.getElementById(id).classList.remove('translate-x-full');
+    }
+    function closeDrawers(){
+        document.getElementById('drawerOverlay').classList.add('hidden');
+        ['notifDrawer','msgDrawer','adminDrawer'].forEach(id=>document.getElementById(id).classList.add('translate-x-full'));
+    }
+
+    /* ---------------- BAŞLATMA ---------------- */
+    async function init(){
+        if(SUPABASE_KEY==='YOUR_SUPABASE_ANON_KEY'){
+            showToast('Kurulum Gerekli','Lütfen kod içindeki SUPABASE_KEY değerini girin.','key',true);
+        }
+        await loadSession();
+        await loadCategories();
+        setupEventListeners();
+        loadSidebarData();
+        setupRealtime();
+        route();
+        setInterval(heartbeat, 60000);
+        const header=document.getElementById('topHeader');
+        window.addEventListener('scroll',()=>{ header.classList.toggle('scrolled',window.scrollY>8); },{passive:true});
+    }
+
+    function route(){
+        const params=new URLSearchParams(window.location.search);
+        const cat=params.get('category');
+        const profileUser=params.get('u');
+        // Temiz URL: /forum/{id}/{kategori}/{baslik}.html
+        const path=window.location.pathname.replace(/^\/forum\/?/,'').replace(/\/$/,'');
+        const match=path.match(/^(\d+)\/[^\/]+\/[^\/]+\.html$/);
+        // Eski biçimle geriye dönük uyumluluk: /forum/?s=12/genel/baslik.html
+        const s=params.get('s');
+        if(match){ renderQuestionDetail(match[1]); }
+        else if(s){ renderQuestionDetail(s.split('/')[0]); }
+        else if(profileUser){ renderUserProfile(profileUser); }
+        else if(cat){ renderCategory(cat); }
+        else { renderHome(); }
+    }
+
+    /* ---------------- OTURUM / PROFİL ---------------- */
+    async function loadSession(){
+        const { data:{ session } } = await supabaseClient.auth.getSession();
+        currentUser = session?.user || null;
+        if(currentUser){
+            const { data } = await supabaseClient.from('profiles').select('*').eq('id',currentUser.id).single();
+            profile = data;
+            if(profile?.banned){
+                showToast('Hesap Engellendi','Hesabınız yönetici tarafından engellenmiştir.','block',true);
+                await supabaseClient.auth.signOut(); profile=null; currentUser=null;
+            } else { heartbeat(); }
+        }
+        renderUserArea();
+    }
+
+    async function heartbeat(){
+        if(profile) await supabaseClient.from('profiles').update({ last_seen:new Date().toISOString() }).eq('id',profile.id);
+    }
+
+    function renderUserArea(){
+        const area=document.getElementById('userProfileArea');
+        const msgBtn=document.getElementById('messagesBtn');
+        const adminBtn=document.getElementById('adminBtn');
+        if(profile){
+            msgBtn.classList.remove('hidden');
+            adminBtn.classList.toggle('hidden',!isStaff());
+            area.innerHTML=`
+                <button class="flex items-center gap-2 group shrink-0" id="profileMenuBtn">
+                    <span class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-primary-container shadow-sm group-hover:scale-105 transition-transform overflow-hidden shrink-0 block bg-surface-container">
+                        <img src="${profile.avatar_url}" class="w-full h-full object-cover" alt="Profil"/>
+                    </span>
+                </button>`;
+            document.getElementById('profileMenuBtn').addEventListener('click',()=>{ window.location.href='/forum/?u='+profile.username; });
+            loadUnreadCounts();
+        } else {
+            msgBtn.classList.add('hidden'); adminBtn.classList.add('hidden');
+            area.innerHTML=`<button class="bg-primary-container text-on-primary-container flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full font-label-md text-label-md shadow hover:bg-primary transition-all active:scale-95 shrink-0 whitespace-nowrap" id="loginBtn"><span class="material-symbols-outlined text-lg">login</span><span class="hidden sm:inline">Giriş Yap</span></button>`;
+            document.getElementById('loginBtn').addEventListener('click',()=>toggleModal('authModal',true));
+        }
+    }
+
+    function requireAuth(){
+        if(!profile){ toggleModal('authModal',true); showToast('Giriş Gerekli','Bu işlem için üye girişi yapın.','lock',true); return false; }
+        return true;
+    }
+
+    /* ---------------- KATEGORİLER ---------------- */
+    async function loadCategories(){
+        const { data } = await supabaseClient.from('categories').select('*').order('name');
+        categoriesCache = data || [];
+        // Sidebar
+        const list=document.getElementById('categoryList');
+        list.innerHTML = categoriesCache.map(c=>`
+            <li class="group flex items-center justify-between p-2 rounded-lg hover:bg-white transition-all cursor-pointer" onclick="window.location.href='/forum/?category=${c.slug}'">
+                <span class="font-body-md text-on-surface-variant group-hover:text-primary transition-colors">${escapeHtml(c.name)}</span>
+                <span class="material-symbols-outlined text-sm text-outline group-hover:text-primary">chevron_right</span>
+            </li>`).join('');
+        // Modal select
+        const sel=document.getElementById('qCategory');
+        sel.innerHTML = categoriesCache.map(c=>`<option value="${c.slug}">${escapeHtml(c.name)}</option>`).join('');
+    }
+
+    /* ---------------- ANASAYFA / LİSTE ---------------- */
+    function renderHome(){
+        document.getElementById('breadcrumbCurrent').innerText='Anasayfa';
+        document.getElementById('listTitle').innerText='Son Sorular';
+        injectHomeSchema();
+        loadLatestQuestions();
+    }
+    function renderCategory(slug){
+        const c=categoriesCache.find(x=>x.slug===slug);
+        const name=c?c.name:slug;
+        document.getElementById('breadcrumbCurrent').innerText=name;
+        document.getElementById('listTitle').innerText=name+' Soruları';
+        document.title=`${name} Soruları | DMOZ Q&A`;
+        setMeta('canonicalLink','href',SITE_ORIGIN+'/forum/?category='+encodeURIComponent(slug));
+        setMeta('ogUrl','content',SITE_ORIGIN+'/forum/?category='+encodeURIComponent(slug));
+        setMeta('ogTitle','content',`${name} Soruları | DMOZ Q&A`);
+        document.getElementById('json-ld-schema').textContent=JSON.stringify({
+            "@context":"https://schema.org","@type":"CollectionPage","name":name+' Soruları',
+            "url":SITE_ORIGIN+'/forum/?category='+encodeURIComponent(slug),
+            "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
+        });
+        loadLatestQuestions('created_at',slug);
+    }
+
+    async function loadLatestQuestions(sort='created_at',category=null){
+        const container=document.getElementById('questionsContainer');
+        try{
+            let query=supabaseClient.from('questions').select('*').order(sort==='popular'?'votes':'created_at',{ascending:false}).limit(20);
+            if(category) query=query.eq('category',category);
+            const { data,error }=await query;
+            if(error) throw error;
+            if(!data.length){ container.innerHTML=`<div class="text-center p-12 text-on-surface-variant">Henüz soru bulunmuyor.</div>`; return; }
+            let profMap={};
+            const ids=[...new Set(data.map(q=>q.author_id).filter(Boolean))];
+            if(ids.length){ const { data:profs }=await supabaseClient.from('profiles').select('id,verified').in('id',ids); (profs||[]).forEach(p=>profMap[p.id]=p); }
+            container.innerHTML=data.map(q=>renderQuestionCard(q,profMap[q.author_id])).join('');
+        }catch(err){ console.error('[v0] list error',err); container.innerHTML=`<div class="text-error p-4 text-center">Veriler yüklenirken hata oluştu.</div>`; }
+    }
+
+    function renderQuestionCard(q,authorP){
+        const url=buildUrl(q);
+        const tags=q.tags?q.tags.split(',').map(t=>`<span class="bg-primary/5 text-primary px-2 py-0.5 rounded text-[10px] font-bold border border-primary/20">#${escapeHtml(t.trim())}</span>`).join(' '):'';
+        return `
+            <article class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group" onclick="window.location.href='${url}'">
+                <div class="flex gap-4">
+                    <div class="hidden sm:flex flex-col items-center justify-center bg-surface-container-low rounded-lg p-2 min-w-[60px] h-fit border border-outline-variant/20">
+                        <span class="font-headline-md text-primary-container font-bold">${q.votes||0}</span>
+                        <span class="text-[10px] text-on-surface-variant uppercase font-bold">BEĞENİ</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-2 text-xs">
+                            <span class="font-bold text-primary">@${escapeHtml(q.author||'anonim')}</span>${verifiedBadge(authorP)}
+                            <span class="text-outline">• ${timeAgo(q.created_at)}</span>
+                        </div>
+                        <h4 class="font-headline-md text-on-surface mb-2 group-hover:text-primary transition-colors line-clamp-1">${escapeHtml(q.title)}</h4>
+                        <div class="text-on-surface-variant text-sm line-clamp-2 mb-4 leading-relaxed">${stripHtml(q.content)}</div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            ${tags}
+                            <div class="ml-auto flex items-center gap-4 text-outline text-[11px] font-bold">
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">forum</span> ${q.answer_count||0}</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">visibility</span> ${q.views||0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>`;
+    }
+    function stripHtml(html){ const d=document.createElement('div'); d.innerHTML=html||''; return escapeHtml(d.textContent.slice(0,200)); }
+
+    /* ---------------- SORU DETAY ---------------- */
+    async function renderQuestionDetail(idOrSlug){
+        const id=parseInt(String(idOrSlug).split('/')[0]); // hem "12" hem "12/genel/baslik.html" formatını kabul eder
+        try{
+            const { data:q,error }=await supabaseClient.from('questions').select('*').eq('id',id).single();
+            if(error||!q) throw error||new Error('not found');
+            let authorP=null;
+            if(q.author_id){ const { data }=await supabaseClient.from('profiles').select('username,avatar_url,verified,created_at,city,zodiac,profession').eq('id',q.author_id).maybeSingle(); authorP=data; }
+            injectSchema(q);
+            document.getElementById('breadcrumbCurrent').innerText=q.title.slice(0,40);
+            const liked = profile ? await hasLiked(q.id) : false;
+            const c=document.getElementById('viewContainer');
+            c.innerHTML=`
+                <div class="space-y-6">
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <a href="/forum/?u=${encodeURIComponent(q.author||'')}" class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-on-primary overflow-hidden shrink-0 border-2 border-primary-container/50 shadow-sm">
+                                ${authorP?.avatar_url?`<img src="${escapeHtml(authorP.avatar_url)}" class="w-full h-full object-cover" alt="@${escapeHtml(q.author||'')}"/>`:`<span class="material-symbols-outlined text-2xl">person</span>`}
+                            </a>
+                            <div class="flex-1 min-w-0">
+                                <a href="/forum/?u=${encodeURIComponent(q.author||'')}" class="font-bold text-sm flex items-center gap-1 hover:text-primary transition-colors w-fit">@${escapeHtml(q.author||'anonim')} ${verifiedBadge(authorP)}</a>
+                                <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-[11px] text-on-surface-variant">
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">schedule</span>${timeAgo(q.created_at)}</span>
+                                    ${authorP?.created_at?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">calendar_month</span>Üyelik: ${new Date(authorP.created_at).toLocaleDateString('tr-TR',{year:'numeric',month:'long'})}</span>`:''}
+                                    ${authorP?.city?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">location_on</span>${escapeHtml(authorP.city)}</span>`:''}
+                                    ${authorP?.profession?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">work</span>${escapeHtml(authorP.profession)}</span>`:''}
+                                    ${authorP?.zodiac?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span>${escapeHtml(authorP.zodiac)}</span>`:''}
+                                </div>
+                            </div>
+                            ${(isStaff()||(profile&&profile.id===q.author_id))?`<button onclick="deleteQuestion(${q.id})" class="text-error hover:bg-error/10 p-2 rounded-full shrink-0"><span class="material-symbols-outlined">delete</span></button>`:''}
+                        </div>
+                        <h2 class="font-headline-lg font-bold text-on-surface mb-4 leading-tight">${escapeHtml(q.title)}</h2>
+                        ${q.image_url?`<img src="${escapeHtml(q.image_url)}" class="rounded-xl mb-4 w-full" alt="${escapeHtml(q.title)}"/>`:''}
+                        <div class="qbody text-body-lg text-on-surface-variant mb-8 leading-relaxed">${q.content}</div>
+                        <div class="flex gap-2 mb-8 flex-wrap">${q.tags?q.tags.split(',').map(t=>`<span class="bg-surface-container px-3 py-1 rounded text-xs text-primary font-bold">#${escapeHtml(t.trim())}</span>`).join(''):''}</div>
+                        <div class="border-t border-outline-variant pt-6 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleLike(${q.id})" id="likeBtn" class="flex items-center gap-2 px-4 py-2 ${liked?'bg-primary text-white':'bg-surface-container'} rounded-full hover:bg-primary/10 transition-colors font-bold text-sm">
+                                    <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' ${liked?1:0}">favorite</span> <span id="likeCount">${q.votes||0}</span>
+                                </button>
+                                <button onclick="shareQuestion('${buildUrl(q).replace(/'/g,'')}','${escapeHtml(q.title).replace(/'/g,'')}')" class="flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full hover:bg-primary/10 transition-colors font-bold text-sm">
+                                    <span class="material-symbols-outlined text-lg">share</span> Paylaş
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3"><span class="w-1 h-6 bg-primary rounded-full"></span><h3 class="font-headline-md font-bold text-on-surface"><span id="answerCountLabel">${q.answer_count||0}</span> Cevap</h3></div>
+                    <div id="answersContainer" class="space-y-4"></div>
+                    <div class="bg-surface-container-high rounded-xl p-6">
+                        <h4 class="font-bold mb-4 text-primary">Cevabınızı Paylaşın</h4>
+                        <textarea id="answerInput" class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-4 min-h-[120px] focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="Çözüm önerinizi buraya yazın..."></textarea>
+                        <div class="flex justify-end mt-4"><button onclick="postAnswer(${q.id})" class="bg-primary-container text-on-primary-container px-8 py-2.5 rounded-full font-bold hover:shadow-lg transition-all active:scale-95">Cevapla</button></div>
+                    </div>
+                </div>`;
+            loadAnswers(q.id);
+            supabaseClient.rpc('increment_view_count',{q_id:q.id}).then(({error})=>{ if(error) supabaseClient.from('questions').update({views:(q.views||0)+1}).eq('id',q.id); });
+        }catch(err){ console.error('[v0] detail error',err); renderHome(); showToast('Hata','Soru detayları yüklenemedi.','error',true); }
+    }
+
+    async function loadAnswers(qid){
+        const c=document.getElementById('answersContainer');
+        const { data }=await supabaseClient.from('answers').select('*').eq('question_id',qid).order('votes',{ascending:false});
+        let profMap={};
+        if(data&&data.length){
+            const ids=[...new Set(data.map(a=>a.author_id).filter(Boolean))];
+            if(ids.length){
+                const { data:profs }=await supabaseClient.from('profiles').select('id,avatar_url,verified').in('id',ids);
+                (profs||[]).forEach(p=>profMap[p.id]=p);
+            }
+        }
+        c.innerHTML=(data&&data.length)?data.map(a=>{
+            const ap=profMap[a.author_id];
+            return `
+            <div class="bg-white border border-outline-variant rounded-xl p-6 hover:shadow-sm transition-all">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary overflow-hidden shrink-0">${ap?.avatar_url?`<img src="${escapeHtml(ap.avatar_url)}" class="w-full h-full object-cover" alt=""/>`:`<span class="material-symbols-outlined text-sm">person</span>`}</div>
+                    <div class="flex-1"><span class="font-bold text-xs flex items-center gap-1">@${escapeHtml(a.author||'anonim')} ${verifiedBadge(ap)}</span><span class="text-outline text-[10px] block">${timeAgo(a.created_at)}</span></div>
+                    ${(isStaff()||(profile&&profile.id===a.author_id))?`<button onclick="deleteAnswer(${a.id},${qid})" class="text-error/60 p-1"><span class="material-symbols-outlined text-sm">delete</span></button>`:''}
+                </div>
+                <p class="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(a.content)}</p>
+            </div>`;
+        }).join('') : `<p class="text-on-surface-variant/60 text-center py-4 italic">Henüz cevap verilmemiş. İlk cevabı siz verin!</p>`;
+    }
+
+    async function postAnswer(qid){
+        if(!requireAuth()) return;
+        const input=document.getElementById('answerInput');
+        const content=input.value.trim();
+        if(!content){ showToast('Uyarı','Lütfen bir cevap yazın.','warning',true); return; }
+        try{
+            const { error }=await supabaseClient.from('answers').insert([{ question_id:qid, content, author:profile.username, author_id:profile.id, votes:0 }]);
+            if(error) throw error;
+            input.value='';
+            showToast('Teşekkürler','Cevabınız kaydedildi.');
+            loadAnswers(qid);
+            supabaseClient.rpc('increment_answer_count',{q_id:qid});
+            // soru sahibine bildirim
+            const { data:q }=await supabaseClient.from('questions').select('author_id,title').eq('id',qid).single();
+            if(q&&q.author_id&&q.author_id!==profile.id){
+                await supabaseClient.from('notifications').insert([{ user_id:q.author_id, type:'answer', content:`@${profile.username} sorunuza cevap verdi: ${q.title.slice(0,40)}`, link:`/forum/${qid}/genel/x.html` }]);
+            }
+            const lbl=document.getElementById('answerCountLabel'); if(lbl) lbl.innerText=parseInt(lbl.innerText||'0')+1;
+        }catch(err){ console.error('[v0] answer error',err); showToast('Hata','Cevap gönderilemedi.','error',true); }
+    }
+
+    /* ---------------- BEĞENİ / PAYLAŞ ---------------- */
+    async function hasLiked(qid){
+        const { data }=await supabaseClient.from('likes').select('id').eq('user_id',profile.id).eq('question_id',qid).maybeSingle();
+        return !!data;
+    }
+    async function toggleLike(qid){
+        if(!requireAuth()) return;
+        const liked=await hasLiked(qid);
+        const btn=document.getElementById('likeBtn'), cnt=document.getElementById('likeCount');
+        let n=parseInt(cnt.innerText||'0');
+        if(liked){
+            await supabaseClient.from('likes').delete().eq('user_id',profile.id).eq('question_id',qid);
+            n=Math.max(0,n-1); btn.classList.remove('bg-primary','text-white'); btn.classList.add('bg-surface-container');
+            btn.querySelector('.material-symbols-outlined').style.fontVariationSettings="'FILL' 0";
+        } else {
+            await supabaseClient.from('likes').insert([{ user_id:profile.id, question_id:qid }]);
+            n=n+1; btn.classList.add('bg-primary','text-white'); btn.classList.remove('bg-surface-container');
+            btn.querySelector('.material-symbols-outlined').style.fontVariationSettings="'FILL' 1";
+            const { data:q }=await supabaseClient.from('questions').select('author_id,title').eq('id',qid).single();
+            if(q&&q.author_id&&q.author_id!==profile.id){
+                await supabaseClient.from('notifications').insert([{ user_id:q.author_id, type:'like', content:`@${profile.username} sorunuzu beğendi`, link:`/forum/${qid}/genel/x.html` }]);
+            }
+        }
+        cnt.innerText=n;
+        await supabaseClient.from('questions').update({ votes:n }).eq('id',qid);
+    }
+    function shareQuestion(url,title){
+        const full=window.location.origin+url;
+        if(navigator.share){ navigator.share({ title, url:full }).catch(()=>{}); }
+        else { navigator.clipboard.writeText(full); showToast('Kopyalandı','Bağlantı panoya kopyalandı.','link'); }
+    }
+
+    /* ---------------- KULLANICI PROFİLİ ---------------- */
+    async function renderUserProfile(username){
+        const { data:p }=await supabaseClient.from('profiles').select('*').eq('username',username).single();
+        if(!p){ renderHome(); return; }
+        document.getElementById('breadcrumbCurrent').innerText='@'+p.username;
+        document.title=`@${p.username} | DMOZ Q&A`;
+        setMeta('canonicalLink','href',SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username));
+        setMeta('ogUrl','content',SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username));
+        setMeta('ogTitle','content',`@${p.username} | DMOZ Q&A`);
+        document.getElementById('json-ld-schema').textContent=JSON.stringify({
+            "@context":"https://schema.org","@type":"ProfilePage",
+            "mainEntity":{ "@type":"Person","name":p.full_name||p.username,"alternateName":p.username,"image":p.avatar_url,"url":SITE_ORIGIN+'/forum/?u='+encodeURIComponent(p.username) }
+        });
+        const { data:questions }=await supabaseClient.from('questions').select('*').eq('author_id',p.id).order('created_at',{ascending:false});
+        const { data:answers }=await supabaseClient.from('answers').select('*,questions(title,id,category)').eq('author_id',p.id).order('created_at',{ascending:false});
+        const online=isOnline(p.last_seen);
+        const isMe=profile&&profile.id===p.id;
+        const social=[
+            p.social_twitter?`<a href="${escapeHtml(p.social_twitter)}" target="_blank" rel="noopener" class="text-secondary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">alternate_email</span>Twitter</a>`:'',
+            p.social_instagram?`<a href="${escapeHtml(p.social_instagram)}" target="_blank" rel="noopener" class="text-secondary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">photo_camera</span>Instagram</a>`:'',
+            p.social_website?`<a href="${escapeHtml(p.social_website)}" target="_blank" rel="noopener" class="text-secondary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">language</span>Web</a>`:''
+        ].filter(Boolean).join('');
+        document.getElementById('viewContainer').innerHTML=`
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                    <div class="relative">
+                        <img src="${p.avatar_url}" class="w-28 h-28 rounded-full object-cover border-4 border-primary-container" alt="@${escapeHtml(p.username)}"/>
+                        <span class="absolute bottom-2 right-2 w-5 h-5 rounded-full border-2 border-white ${online?'online-dot':'offline-dot'}" title="${online?'Çevrimiçi':'Çevrimdışı'}"></span>
+                    </div>
+                    <div class="flex-1 text-center sm:text-left">
+                        <div class="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                            <h2 class="font-headline-lg font-bold text-on-surface">${escapeHtml(p.full_name||p.username)}</h2>
+                            ${verifiedBadge(p)}
+                            ${p.role!=='user'?`<span class="text-[10px] bg-error/10 text-error px-2 py-0.5 rounded-full font-bold uppercase">${p.role}</span>`:''}
+                        </div>
+                        <p class="text-secondary font-bold mb-2">@${escapeHtml(p.username)} <span class="text-outline text-xs font-normal">• ${online?'<span class="text-green-600">çevrimiçi</span>':'son görülme '+timeAgo(p.last_seen)}</span></p>
+                        ${p.bio?`<p class="text-on-surface-variant mb-3">${escapeHtml(p.bio)}</p>`:''}
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 text-sm text-on-surface-variant mb-3">
+                            ${p.city?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">location_on</span>${escapeHtml(p.city)}</span>`:''}
+                            ${p.profession?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">work</span>${escapeHtml(p.profession)}</span>`:''}
+                            ${p.zodiac?`<span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">star</span>${escapeHtml(p.zodiac)}</span>`:''}
+                        </div>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-sm mb-4">${social}</div>
+                        <div class="flex items-center justify-center sm:justify-start gap-3">
+                            ${isMe?`<button onclick="openEditProfile()" class="bg-primary-container text-on-primary-container px-5 py-2 rounded-full font-bold text-sm flex items-center gap-1"><span class="material-symbols-outlined text-base">edit</span>Profili Düzenle</button>
+                                    <button onclick="doSignOut()" class="bg-surface-container px-5 py-2 rounded-full font-bold text-sm text-error flex items-center gap-1"><span class="material-symbols-outlined text-base">logout</span>Çıkış</button>`
+                                  :(profile?`<button onclick="openChatWith('${p.id}','${escapeHtml(p.username)}','${p.avatar_url}')" class="bg-primary-container text-on-primary-container px-5 py-2 rounded-full font-bold text-sm flex items-center gap-1"><span class="material-symbols-outlined text-base">chat</span>Mesaj Gönder</button>`:'')}
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline-variant">
+                    <div class="text-center p-3 bg-surface-container-low rounded-xl"><p class="font-headline-lg font-bold text-primary">${questions?.length||0}</p><p class="text-xs text-on-surface-variant uppercase font-bold">Soru</p></div>
+                    <div class="text-center p-3 bg-surface-container-low rounded-xl"><p class="font-headline-lg font-bold text-primary">${answers?.length||0}</p><p class="text-xs text-on-surface-variant uppercase font-bold">Cevap</p></div>
+                </div>
+            </div>
+            <div class="mt-6">
+                <h3 class="font-headline-md font-bold text-on-surface mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-primary">help</span>Açtığı Sorular</h3>
+                <div class="space-y-3">${questions&&questions.length?questions.map(renderQuestionCard).join(''):'<p class="text-on-surface-variant/60 italic text-sm">Henüz soru açılmamış.</p>'}</div>
+            </div>
+            <div class="mt-6">
+                <h3 class="font-headline-md font-bold text-on-surface mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-primary">question_answer</span>Verdiği Cevaplar</h3>
+                <div class="space-y-2">${answers&&answers.length?answers.map(a=>`
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 hover:border-primary/30 cursor-pointer" onclick="window.location.href='/forum/${a.questions?.id}/${a.questions?.category||'genel'}/x.html'">
+                        <p class="text-xs text-secondary font-bold mb-1">${escapeHtml(a.questions?.title||'Soru')}</p>
+                        <p class="text-sm text-on-surface-variant line-clamp-2">${escapeHtml(a.content)}</p>
+                    </div>`).join(''):'<p class="text-on-surface-variant/60 italic text-sm">Henüz cevap verilmemiş.</p>'}</div>
+            </div>`;
+    }
+
+    function openEditProfile(){
+        if(!profile) return;
+        document.getElementById('editAvatarPreview').src=profile.avatar_url;
+        document.getElementById('epFullName').value=profile.full_name||'';
+        document.getElementById('epCity').value=profile.city||'';
+        document.getElementById('epZodiac').value=profile.zodiac||'';
+        document.getElementById('epProfession').value=profile.profession||'';
+        document.getElementById('epBio').value=profile.bio||'';
+        document.getElementById('epTwitter').value=profile.social_twitter||'';
+        document.getElementById('epInstagram').value=profile.social_instagram||'';
+        document.getElementById('epWebsite').value=profile.social_website||'';
+        toggleModal('editProfileModal',true);
+    }
+
+    /* ---------------- AUTH İŞLEMLERİ ---------------- */
+    async function doSignOut(){
+        await supabaseClient.auth.signOut();
+        profile=null; currentUser=null;
+        showToast('Çıkış Yapıldı','Görüşmek üzere!','logout');
+        setTimeout(()=>window.location.href='/forum/',800);
+    }
+
+    /* ---------------- BİLDİRİM / MESAJ SAYAÇLARI ---------------- */
+    async function loadUnreadCounts(){
+        if(!profile) return;
+        const { count:nc }=await supabaseClient.from('notifications').select('*',{count:'exact',head:true}).eq('user_id',profile.id).eq('read',false);
+        const nd=document.getElementById('notificationDot');
+        nd.innerText=nc||0; nd.classList.toggle('hidden',!nc); nd.classList.toggle('flex',!!nc);
+        const { count:mc }=await supabaseClient.from('messages').select('*',{count:'exact',head:true}).eq('receiver_id',profile.id).eq('read',false);
+        const mb=document.getElementById('messageBadge');
+        mb.innerText=mc||0; mb.classList.toggle('hidden',!mc); mb.classList.toggle('flex',!!mc);
+    }
+
+    async function openNotifications(){
+        if(!requireAuth()) return;
+        openDrawer('notifDrawer');
+        const list=document.getElementById('notifList');
+        const { data }=await supabaseClient.from('notifications').select('*').eq('user_id',profile.id).order('created_at',{ascending:false}).limit(50);
+        list.innerHTML=(data&&data.length)?data.map(n=>`
+            <div class="p-3 rounded-xl border ${n.read?'bg-surface-container-lowest border-outline-variant/30':'bg-primary/5 border-primary/20'} flex gap-3">
+                <span class="material-symbols-outlined text-primary">${n.type==='message'?'chat':n.type==='like'?'favorite':n.type==='answer'?'question_answer':'notifications'}</span>
+                <div class="flex-1"><p class="text-sm text-on-surface">${escapeHtml(n.content)}</p><p class="text-[10px] text-outline mt-1">${timeAgo(n.created_at)}</p></div>
+            </div>`).join('') : '<p class="text-center text-on-surface-variant/60 py-8 text-sm">Bildirim yok.</p>';
+        await supabaseClient.from('notifications').update({read:true}).eq('user_id',profile.id).eq('read',false);
+        loadUnreadCounts();
+    }
+
+    /* ---------------- MESAJLAŞMA ---------------- */
+    async function openMessages(){
+        if(!requireAuth()) return;
+        openDrawer('msgDrawer');
+        showConversationList();
+    }
+    async function showConversationList(){
+        document.getElementById('msgThread').classList.add('hidden');
+        document.getElementById('msgThread').classList.remove('flex');
+        document.getElementById('msgConversations').classList.remove('hidden');
+        document.getElementById('msgDrawerTitle').innerText='Mesajlar';
+        activeChatUser=null;
+        const list=document.getElementById('msgConversations');
+        const { data:msgs }=await supabaseClient.from('messages').select('*').or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`).order('created_at',{ascending:false});
+        const partners={};
+        (msgs||[]).forEach(m=>{ const other=m.sender_id===profile.id?m.receiver_id:m.sender_id; if(!partners[other]) partners[other]={last:m,unread:0}; if(m.receiver_id===profile.id&&!m.read) partners[other].unread++; });
+        const ids=Object.keys(partners);
+        if(!ids.length){ list.innerHTML='<p class="text-center text-on-surface-variant/60 py-8 text-sm">Henüz mesajınız yok. Bir profilden mesaj gönderin.</p>'; return; }
+        const { data:profs }=await supabaseClient.from('profiles').select('id,username,avatar_url,last_seen').in('id',ids);
+        list.innerHTML=profs.map(p=>{
+            const info=partners[p.id];
+            return `<div class="flex items-center gap-3 p-4 border-b border-outline-variant/30 hover:bg-surface-container-low cursor-pointer" onclick="openChatWith('${p.id}','${escapeHtml(p.username)}','${p.avatar_url}')">
+                <div class="relative"><img src="${p.avatar_url}" class="w-12 h-12 rounded-full object-cover" alt=""/><span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${isOnline(p.last_seen)?'online-dot':'offline-dot'}"></span></div>
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm">@${escapeHtml(p.username)}</p><p class="text-xs text-on-surface-variant truncate">${escapeHtml(info.last.content)}</p></div>
+                ${info.unread?`<span class="bg-primary text-white text-[10px] rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center font-bold">${info.unread}</span>`:''}
+            </div>`;
+        }).join('');
+    }
+    async function openChatWith(userId,username,avatar){
+        if(!requireAuth()) return;
+        closeDrawers(); openDrawer('msgDrawer');
+        activeChatUser={id:userId,username,avatar};
+        document.getElementById('msgConversations').classList.add('hidden');
+        document.getElementById('msgThread').classList.remove('hidden');
+        document.getElementById('msgThread').classList.add('flex');
+        document.getElementById('msgDrawerTitle').innerText='@'+username;
+        await loadThread();
+        await supabaseClient.from('messages').update({read:true}).eq('sender_id',userId).eq('receiver_id',profile.id).eq('read',false);
+        loadUnreadCounts();
+    }
+    async function loadThread(){
+        const body=document.getElementById('msgThreadBody');
+        const { data }=await supabaseClient.from('messages').select('*')
+            .or(`and(sender_id.eq.${profile.id},receiver_id.eq.${activeChatUser.id}),and(sender_id.eq.${activeChatUser.id},receiver_id.eq.${profile.id})`)
+            .order('created_at',{ascending:true});
+        body.innerHTML=(data||[]).map(m=>{
+            const mine=m.sender_id===profile.id;
+            return `<div class="flex ${mine?'justify-end':'justify-start'}"><div class="${mine?'bg-primary-container text-on-primary-container':'bg-surface-container'} px-4 py-2 rounded-2xl max-w-[75%]"><p class="text-sm">${escapeHtml(m.content)}</p><p class="text-[9px] opacity-60 mt-1 text-right">${timeAgo(m.created_at)}</p></div></div>`;
+        }).join('');
+        body.scrollTop=body.scrollHeight;
+    }
+
+    /* ---------------- ADMIN ---------------- */
+    async function openAdmin(){
+        if(!isStaff()){ showToast('Yetkisiz','Bu alana erişiminiz yok.','block',true); return; }
+        openDrawer('adminDrawer');
+        loadAdminUsers();
+    }
+    async function loadAdminUsers(){
+        const { data }=await supabaseClient.from('profiles').select('*').order('created_at',{ascending:false});
+        document.getElementById('adminUsers').innerHTML=(data||[]).map(u=>`
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex items-center gap-3">
+                <img src="${u.avatar_url}" class="w-10 h-10 rounded-full object-cover" alt=""/>
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm flex items-center gap-1">@${escapeHtml(u.username)} ${verifiedBadge(u)}</p><p class="text-[10px] text-outline">${escapeHtml(u.email||'')} • ${u.role}${u.banned?' • <span class="text-error font-bold">YASAKLI</span>':''}</p></div>
+                ${isAdmin()?`<select onchange="setRole('${u.id}',this.value)" class="text-xs border border-outline-variant rounded px-1 py-1 bg-white">
+                    <option value="user" ${u.role==='user'?'selected':''}>user</option>
+                    <option value="moderator" ${u.role==='moderator'?'selected':''}>moderatör</option>
+                    <option value="admin" ${u.role==='admin'?'selected':''}>admin</option></select>`:''}
+                <button onclick="toggleBan('${u.id}',${!u.banned})" class="p-2 rounded-full ${u.banned?'text-green-600 hover:bg-green-50':'text-error hover:bg-error/10'}" title="${u.banned?'Yasağı Kaldır':'Yasakla'}"><span class="material-symbols-outlined text-lg">${u.banned?'lock_open':'block'}</span></button>
+            </div>`).join('');
+    }
+    async function setRole(id,role){
+        const { error }=await supabaseClient.from('profiles').update({role}).eq('id',id);
+        showToast(error?'Hata':'Güncellendi',error?'Yetki değiştirilemedi':'Kullanıcı yetkisi: '+role,error?'error':'verified_user',!!error);
+    }
+    async function toggleBan(id,banned){
+        const { error }=await supabaseClient.from('profiles').update({banned}).eq('id',id);
+        if(!error){ showToast(banned?'Yasaklandı':'Yasak Kaldırıldı','İşlem başarılı.',banned?'block':'lock_open'); loadAdminUsers(); }
+        else showToast('Hata','İşlem başarısız.','error',true);
+    }
+    async function loadAdminQuestions(){
+        const { data }=await supabaseClient.from('questions').select('*').order('created_at',{ascending:false}).limit(100);
+        document.getElementById('adminQuestions').innerHTML=(data||[]).map(q=>`
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex items-center gap-3">
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm truncate">${escapeHtml(q.title)}</p><p class="text-[10px] text-outline">@${escapeHtml(q.author||'')} • ${q.category||'-'} • ${q.answer_count||0} cevap</p></div>
+                <button onclick="window.location.href='${buildUrl(q)}'" class="p-2 text-secondary"><span class="material-symbols-outlined text-lg">open_in_new</span></button>
+                <button onclick="adminDeleteQuestion(${q.id})" class="p-2 text-error hover:bg-error/10 rounded-full"><span class="material-symbols-outlined text-lg">delete</span></button>
+            </div>`).join('');
+    }
+    async function adminDeleteQuestion(id){
+        if(!confirm('Bu konuyu silmek istediğinize emin misiniz?')) return;
+        await supabaseClient.from('questions').delete().eq('id',id);
+        showToast('Silindi','Konu kaldırıldı.'); loadAdminQuestions();
+    }
+    async function loadAdminCategories(){
+        document.getElementById('adminCatList').innerHTML=categoriesCache.map(c=>`
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex items-center justify-between">
+                <span class="text-sm font-bold">${escapeHtml(c.name)} <span class="text-outline font-normal">/${c.slug}</span></span>
+                <button onclick="deleteCategory(${c.id})" class="p-1 text-error hover:bg-error/10 rounded-full"><span class="material-symbols-outlined text-lg">delete</span></button>
+            </div>`).join('');
+    }
+    async function deleteCategory(id){
+        if(!confirm('Kategori silinsin mi?')) return;
+        await supabaseClient.from('categories').delete().eq('id',id);
+        await loadCategories(); loadAdminCategories(); showToast('Silindi','Kategori kaldırıldı.');
+    }
+
+    /* ---------------- SİLME (sahip/staff) ---------------- */
+    async function deleteQuestion(id){
+        if(!confirm('Bu soruyu kalıcı olarak silmek istediğinize emin misiniz?')) return;
+        const { error }=await supabaseClient.from('questions').delete().eq('id',id);
+        if(!error){ showToast('Silindi','Soru kaldırıldı.'); window.location.href='/forum/'; } else showToast('Hata','Silinemedi.','error',true);
+    }
+    async function deleteAnswer(id,qid){
+        if(!confirm('Bu cevabı silmek istiyor musunuz?')) return;
+        const { error }=await supabaseClient.from('answers').delete().eq('id',id);
+        if(!error){ showToast('Cevap Silindi','İşlem başarılı.'); loadAnswers(qid); }
+    }
+
+    /* ---------------- SIDEBAR VERİLERİ ---------------- */
+    async function loadSidebarData(){
+        const { count:qc }=await supabaseClient.from('questions').select('*',{count:'exact',head:true});
+        document.getElementById('statTotalQuestions').innerText=qc||0;
+        const { count:ac }=await supabaseClient.from('answers').select('*',{count:'exact',head:true});
+        document.getElementById('statTotalAnswers').innerText=ac||0;
+        const { count:uc }=await supabaseClient.from('profiles').select('*',{count:'exact',head:true});
+        document.getElementById('statActiveExperts').innerText=uc||0;
+        const since=new Date(Date.now()-120000).toISOString();
+        const { data:online }=await supabaseClient.from('profiles').select('username,avatar_url').gt('last_seen',since).limit(8);
+        const ul=document.getElementById('onlineUsers');
+        ul.innerHTML=(online&&online.length)?online.map(u=>`
+            <li class="flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="window.location.href='/forum/?u=${u.username}'">
+                <div class="relative"><img src="${u.avatar_url}" class="w-7 h-7 rounded-full object-cover" alt=""/><span class="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-inverse-surface online-dot"></span></div>
+                <span class="text-xs text-white/80">@${escapeHtml(u.username)}</span>
+            </li>`).join('') : '<li class="text-white/40 text-xs">Şu an çevrimiçi üye yok.</li>';
+    }
+
+    /* ---------------- REALTIME ---------------- */
+    function setupRealtime(){
+        supabaseClient.channel('rt-questions').on('postgres_changes',{event:'INSERT',schema:'public',table:'questions'},(payload)=>{
+            if(profile&&payload.new.author_id===profile.id) return;
+            showToast('Yeni Konu','@'+(payload.new.author||'biri')+' yeni soru sordu','forum');
+            if(!new URLSearchParams(location.search).get('s')) loadLatestQuestions();
+        }).subscribe();
+
+        supabaseClient.channel('rt-messages').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},(payload)=>{
+            if(!profile||payload.new.receiver_id!==profile.id) return;
+            showToast('Yeni Mesaj','Yeni bir mesajın var','chat');
+            loadUnreadCounts();
+            if(activeChatUser&&payload.new.sender_id===activeChatUser.id) loadThread();
+        }).subscribe();
+
+        supabaseClient.channel('rt-notifs').on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications'},(payload)=>{
+            if(!profile||payload.new.user_id!==profile.id) return;
+            showToast('Bildirim',payload.new.content,'notifications');
+            loadUnreadCounts();
+        }).subscribe();
+    }
+
+    /* ---------------- SEO ŞEMASI ---------------- */
+    function setMeta(id,attr,val){ const el=document.getElementById(id); if(el) el.setAttribute(attr,val); }
+
+    function injectSchema(q){
+        const url=SITE_ORIGIN+buildUrl(q);
+        const desc=stripHtml(q.content).slice(0,160);
+        const categoryName=(categoriesCache.find(c=>c.slug===q.category)||{}).name||q.category||'Genel';
+
+        const qaSchema={
+            "@context":"https://schema.org",
+            "@type":"QAPage",
+            "mainEntity":{
+                "@type":"Question",
+                "name":q.title,
+                "text":stripHtml(q.content),
+                "answerCount":q.answer_count||0,
+                "upvoteCount":q.votes||0,
+                "datePublished":q.created_at,
+                "url":url,
+                "author":{ "@type":"Person", "name":q.author||"anonim", "url":SITE_ORIGIN+'/forum/?u='+encodeURIComponent(q.author||'') }
+            }
+        };
+        const breadcrumbSchema={
+            "@context":"https://schema.org",
+            "@type":"BreadcrumbList",
+            "itemListElement":[
+                { "@type":"ListItem","position":1,"name":"Anasayfa","item":SITE_ORIGIN+"/forum/" },
+                { "@type":"ListItem","position":2,"name":categoryName,"item":SITE_ORIGIN+"/forum/?category="+encodeURIComponent(q.category||'genel') },
+                { "@type":"ListItem","position":3,"name":q.title,"item":url }
+            ]
+        };
+        document.getElementById('json-ld-schema').textContent=JSON.stringify([qaSchema,breadcrumbSchema]);
+
+        document.title=`${q.title} | DMOZ Q&A`;
+        setMeta('canonicalLink','href',url);
+        let meta=document.querySelector('meta[name="description"]'); if(meta) meta.setAttribute('content',desc);
+        setMeta('ogType','content','article');
+        setMeta('ogTitle','content',q.title);
+        setMeta('ogDesc','content',desc);
+        setMeta('ogUrl','content',url);
+        setMeta('twTitle','content',q.title);
+        setMeta('twDesc','content',desc);
+        if(q.image_url){ setMeta('ogImage','content',q.image_url); setMeta('twImage','content',q.image_url); }
+    }
+
+    function injectHomeSchema(){
+        const schema=[
+            {
+                "@context":"https://schema.org",
+                "@type":"WebSite",
+                "name":"DMOZ Q&A",
+                "url":SITE_ORIGIN+"/forum/",
+                "inLanguage":"tr-TR",
+                "potentialAction":{
+                    "@type":"SearchAction",
+                    "target":{ "@type":"EntryPoint","urlTemplate":SITE_ORIGIN+"/forum/?q={search_term_string}" },
+                    "query-input":"required name=search_term_string"
+                }
+            },
+            {
+                "@context":"https://schema.org",
+                "@type":"Organization",
+                "name":"DMOZ Q&A",
+                "url":SITE_ORIGIN+"/forum/",
+                "logo":SITE_ORIGIN+"/forum/og-cover.png"
+            }
+        ];
+        document.getElementById('json-ld-schema').textContent=JSON.stringify(schema);
+        document.title='DMOZ Q&A | Bilgi Paylaşım Platformu';
+        const defaultDesc='DMOZ Q&A - Uzman topluluğuyla soru sor, cevap ver, bilgini paylaş. Yazılım, donanım, yapay zeka ve kariyer üzerine binlerce soru ve cevap.';
+        let meta=document.querySelector('meta[name="description"]'); if(meta) meta.setAttribute('content',defaultDesc);
+        setMeta('canonicalLink','href',SITE_ORIGIN+'/forum/');
+        setMeta('ogType','content','website');
+        setMeta('ogTitle','content','DMOZ Q&A | Bilgi Paylaşım Platformu');
+        setMeta('ogDesc','content',defaultDesc);
+        setMeta('ogUrl','content',SITE_ORIGIN+'/forum/');
+        setMeta('twTitle','content','DMOZ Q&A | Bilgi Paylaşım Platformu');
+        setMeta('twDesc','content',defaultDesc);
+    }
+
+    /* ---------------- ZENGİN EDİTÖR ---------------- */
+    function setupEditor(){
+        document.querySelectorAll('.editor-tool').forEach(btn=>{
+            btn.addEventListener('click',()=>{ const cmd=btn.dataset.cmd; const val=btn.dataset.val||null; document.execCommand(cmd,false,val); document.getElementById('richEditor').focus(); });
+        });
+        document.getElementById('insertImageBtn').addEventListener('click',()=>{ const url=prompt('Resim URL adresi:'); if(url){ document.execCommand('insertHTML',false,`<img src="${url}" alt="resim"/>`); } });
+        document.getElementById('insertVideoBtn').addEventListener('click',()=>{
+            const url=prompt('Video URL (YouTube veya mp4):');
+            if(!url) return;
+            let embed;
+            const yt=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/);
+            if(yt){ embed=`<iframe width="100%" height="315" src="https://www.youtube.com/embed/${yt[1]}" frameborder="0" allowfullscreen style="border-radius:.5rem;margin:.5rem 0"></iframe>`; }
+            else { embed=`<video src="${url}" controls></video>`; }
+            document.execCommand('insertHTML',false,embed);
+        });
+        document.getElementById('insertLinkBtn').addEventListener('click',()=>{ const url=prompt('Bağlantı URL:'); if(url){ document.execCommand('createLink',false,url); } });
+    }
+
+    /* ---------------- OLAY DİNLEYİCİLER ---------------- */
+    function setupEventListeners(){
+        // Soru modalı
+        document.getElementById('openModalBtn')?.addEventListener('click',()=>{ if(requireAuth()) toggleModal('questionModal',true); });
+        document.getElementById('mobileAskBtn')?.addEventListener('click',()=>{ if(requireAuth()) toggleModal('questionModal',true); });
+        document.getElementById('closeModalBtn')?.addEventListener('click',()=>toggleModal('questionModal',false));
+        document.getElementById('cancelModalBtn')?.addEventListener('click',()=>toggleModal('questionModal',false));
+        setupEditor();
+
+        // Soru gönderme
+        document.getElementById('askQuestionForm')?.addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            if(!requireAuth()) return;
+            const title=document.getElementById('qTitle').value.trim();
+            const content=document.getElementById('richEditor').innerHTML.trim();
+            let category=document.getElementById('qCategory').value;
+            const newCat=document.getElementById('qNewCategory').value.trim();
+            let tags=document.getElementById('qTags').value.trim();
+            if(!title||!content){ showToast('Eksik Bilgi','Başlık ve içerik zorunludur.','warning',true); return; }
+            try{
+                if(newCat){
+                    const slug=slugify(newCat);
+                    const { error:ce }=await supabaseClient.from('categories').insert([{ name:newCat, slug }]);
+                    if(!ce){ category=slug; await loadCategories(); }
+                    else { const ex=categoriesCache.find(c=>c.slug===slug); if(ex) category=slug; }
+                }
+                if(!tags) tags=title.split(' ').filter(w=>w.length>4).slice(0,3).join(', ');
+                const { error }=await supabaseClient.from('questions').insert([{ title, content, category, tags, author:profile.username, author_id:profile.id, views:0, votes:0, answer_count:0 }]);
+                if(error) throw error;
+                toggleModal('questionModal',false);
+                showToast('Başarılı','Konunuz yayınlandı!');
+                e.target.reset(); document.getElementById('richEditor').innerHTML='';
+                if(!new URLSearchParams(location.search).get('s')) loadLatestQuestions();
+            }catch(err){ console.error('[v0] post question',err); showToast('Hata','Konu gönderilemedi.','error',true); }
+        });
+
+        // AUTH modal sekmeleri
+        document.getElementById('loginBtn')?.addEventListener('click',()=>toggleModal('authModal',true));
+        document.getElementById('closeAuthBtn').addEventListener('click',()=>toggleModal('authModal',false));
+        document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>switchAuthTab(btn.dataset.tab)));
+
+        // Giriş
+        document.getElementById('loginForm').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            let identifier=document.getElementById('loginIdentifier').value.trim();
+            const password=document.getElementById('loginPassword').value;
+            let email=identifier;
+            if(!identifier.includes('@')){
+                const { data }=await supabaseClient.from('profiles').select('email').eq('username',identifier).single();
+                if(!data){ showToast('Hata','Kullanıcı bulunamadı.','error',true); return; }
+                email=data.email;
+            }
+            const { error }=await supabaseClient.auth.signInWithPassword({ email, password });
+            if(error){ showToast('Giriş Başarısız',error.message,'error',true); return; }
+            toggleModal('authModal',false);
+            showToast('Hoş geldin','Giriş başarılı!','verified_user');
+            await loadSession(); route();
+        });
+
+        // Kayıt
+        document.getElementById('registerForm').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const username=document.getElementById('regUsername').value.trim();
+            const email=document.getElementById('regEmail').value.trim();
+            const password=document.getElementById('regPassword').value;
+            // kullanıcı adı uygunluk
+            const { data:exists }=await supabaseClient.from('profiles').select('id').eq('username',username).maybeSingle();
+            if(exists){ showToast('Hata','Bu kullanıcı adı alınmış.','error',true); return; }
+            const { data,error }=await supabaseClient.auth.signUp({ email, password, options:{ data:{ username, full_name:username } } });
+            if(error){ showToast('Kayıt Başarısız',error.message,'error',true); return; }
+            if(!data.session){
+                // e-posta onayı açıksa otomatik giriş dene
+                await supabaseClient.auth.signInWithPassword({ email, password });
+            }
+            toggleModal('authModal',false);
+            showToast('Tebrikler','Üyeliğin oluştu, mavi tik kazandın!','verified');
+            await loadSession(); route();
+        });
+
+        // Şifremi unuttum
+        document.getElementById('forgotBtn').addEventListener('click',async()=>{
+            const id=document.getElementById('loginIdentifier').value.trim();
+            let email=id;
+            if(id&&!id.includes('@')){ const { data }=await supabaseClient.from('profiles').select('email').eq('username',id).single(); email=data?.email; }
+            if(!email){ showToast('E-posta Gerekli','Lütfen e-posta adresinizi girin.','mail',true); return; }
+            const { error }=await supabaseClient.auth.resetPasswordForEmail(email);
+            showToast(error?'Hata':'Gönderildi',error?error.message:'Şifre sıfırlama bağlantısı e-postanıza gönderildi.',error?'error':'mail',!!error);
+        });
+
+        // Profil düzenleme
+        document.getElementById('closeEditProfile').addEventListener('click',()=>toggleModal('editProfileModal',false));
+        document.getElementById('cancelEditProfile').addEventListener('click',()=>toggleModal('editProfileModal',false));
+        document.getElementById('avatarFile').addEventListener('change',async(e)=>{
+            const file=e.target.files[0]; if(!file) return;
+            const path=`${profile.id}/${Date.now()}-${file.name}`;
+            const { error }=await supabaseClient.storage.from('avatars').upload(path,file,{upsert:true});
+            if(error){ showToast('Hata','Avatar yüklenemedi: '+error.message,'error',true); return; }
+            const { data }=supabaseClient.storage.from('avatars').getPublicUrl(path);
+            document.getElementById('editAvatarPreview').src=data.publicUrl;
+            document.getElementById('editAvatarPreview').dataset.url=data.publicUrl;
+        });
+        document.getElementById('editProfileForm').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const updates={
+                full_name:document.getElementById('epFullName').value.trim(),
+                city:document.getElementById('epCity').value.trim(),
+                zodiac:document.getElementById('epZodiac').value,
+                profession:document.getElementById('epProfession').value.trim(),
+                bio:document.getElementById('epBio').value.trim(),
+                social_twitter:document.getElementById('epTwitter').value.trim(),
+                social_instagram:document.getElementById('epInstagram').value.trim(),
+                social_website:document.getElementById('epWebsite').value.trim()
+            };
+            const newAvatar=document.getElementById('editAvatarPreview').dataset.url;
+            if(newAvatar) updates.avatar_url=newAvatar;
+            const { error }=await supabaseClient.from('profiles').update(updates).eq('id',profile.id);
+            if(error){ showToast('Hata','Profil güncellenemedi.','error',true); return; }
+            Object.assign(profile,updates);
+            toggleModal('editProfileModal',false);
+            showToast('Kaydedildi','Profilin güncellendi.');
+            renderUserArea(); renderUserProfile(profile.username);
+        });
+
+        // Drawer açma
+        document.getElementById('notificationsBtn').addEventListener('click',openNotifications);
+        document.getElementById('messagesBtn').addEventListener('click',openMessages);
+        document.getElementById('adminBtn').addEventListener('click',openAdmin);
+        document.getElementById('mobileNotifBtn').addEventListener('click',openNotifications);
+        document.getElementById('mobileMsgBtn').addEventListener('click',openMessages);
+        document.getElementById('mobileProfileBtn').addEventListener('click',()=>{ if(profile) window.location.href='/forum/?u='+profile.username; else toggleModal('authModal',true); });
+        document.getElementById('drawerOverlay').addEventListener('click',closeDrawers);
+        document.querySelectorAll('.close-drawer').forEach(b=>b.addEventListener('click',closeDrawers));
+        document.getElementById('msgBackBtn').addEventListener('click',showConversationList);
+
+        // Mesaj gönderme
+        document.getElementById('msgSendForm').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const input=document.getElementById('msgInput'); const content=input.value.trim();
+            if(!content||!activeChatUser) return;
+            const { error }=await supabaseClient.from('messages').insert([{ sender_id:profile.id, receiver_id:activeChatUser.id, content }]);
+            if(error){ showToast('Hata','Mesaj gönderilemedi.','error',true); return; }
+            input.value=''; loadThread();
+            await supabaseClient.from('notifications').insert([{ user_id:activeChatUser.id, type:'message', content:`@${profile.username} sana mesaj gönderdi`, link:'#' }]);
+        });
+
+        // Admin sekmeleri
+        document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>{
+            document.querySelectorAll('.admin-tab').forEach(b=>{ b.classList.remove('text-primary','border-primary'); b.classList.add('text-on-surface-variant','border-transparent'); });
+            btn.classList.add('text-primary','border-primary'); btn.classList.remove('text-on-surface-variant','border-transparent');
+            const t=btn.dataset.atab;
+            document.getElementById('adminUsers').classList.toggle('hidden',t!=='users');
+            document.getElementById('adminQuestions').classList.toggle('hidden',t!=='questions');
+            document.getElementById('adminCategories').classList.toggle('hidden',t!=='categories');
+            if(t==='questions') loadAdminQuestions();
+            if(t==='categories') loadAdminCategories();
+        }));
+        document.getElementById('adminAddCatForm').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const name=document.getElementById('adminNewCat').value.trim(); if(!name) return;
+            const { error }=await supabaseClient.from('categories').insert([{ name, slug:slugify(name) }]);
+            if(!error){ document.getElementById('adminNewCat').value=''; await loadCategories(); loadAdminCategories(); showToast('Eklendi','Kategori oluşturuldu.'); }
+            else showToast('Hata','Kategori eklenemedi (mevcut olabilir).','error',true);
+        });
+
+        // Arama (masaüstü + mobil ortak)
+        function wireSearch(inputEl,resultsEl,badgeEl){
+            if(!inputEl||!resultsEl) return;
+            inputEl.addEventListener('input',async(e)=>{
+                const val=e.target.value.trim();
+                if(val.length>2){
+                    badgeEl?.classList.replace('hidden','flex');
+                    const { data }=await supabaseClient.from('questions').select('id,title,category').ilike('title',`%${val}%`).limit(8);
+                    resultsEl.classList.remove('hidden');
+                    resultsEl.innerHTML=(data&&data.length)?data.map(q=>`
+                        <div class="p-3 hover:bg-primary-container/10 rounded-lg cursor-pointer flex items-center gap-3 transition-colors" onclick="window.location.href='${buildUrl(q)}'">
+                            <span class="material-symbols-outlined text-primary text-sm">search</span>
+                            <span class="text-sm text-on-surface-variant font-medium line-clamp-1">${escapeHtml(q.title)}</span>
+                        </div>`).join('') : '<div class="p-3 text-xs text-outline italic">Sonuç bulunamadı.</div>';
+                } else { resultsEl.classList.add('hidden'); badgeEl?.classList.replace('flex','hidden'); }
+            });
+        }
+        wireSearch(document.getElementById('ajaxSearch'),document.getElementById('searchResults'),document.getElementById('searchBadge'));
+        wireSearch(document.getElementById('ajaxSearchMobile'),document.getElementById('searchResultsMobile'),null);
+        document.addEventListener('click',(e)=>{
+            if(!e.target.closest('#ajaxSearch')&&!e.target.closest('#searchResults')) document.getElementById('searchResults')?.classList.add('hidden');
+            if(!e.target.closest('#mobileSearchPanel')&&!e.target.closest('#mobileSearchBtn')) document.getElementById('mobileSearchPanel')?.classList.add('hidden');
+        });
+        document.getElementById('mobileSearchBtn')?.addEventListener('click',()=>{
+            const panel=document.getElementById('mobileSearchPanel');
+            panel.classList.toggle('hidden');
+            if(!panel.classList.contains('hidden')) document.getElementById('ajaxSearchMobile')?.focus();
+        });
+
+        // Sıralama
+        document.getElementById('sortNew')?.addEventListener('click',function(){ this.classList.add('bg-white','shadow-sm','text-primary'); document.getElementById('sortPopular').classList.remove('bg-white','shadow-sm','text-primary'); loadLatestQuestions('created_at'); });
+        document.getElementById('sortPopular')?.addEventListener('click',function(){ this.classList.add('bg-white','shadow-sm','text-primary'); document.getElementById('sortNew').classList.remove('bg-white','shadow-sm','text-primary'); loadLatestQuestions('popular'); });
+
+        // çıkışta çevrimdışı işaretle
+        window.addEventListener('beforeunload',()=>{ if(profile) navigator.sendBeacon&&supabaseClient.from('profiles').update({last_seen:new Date(Date.now()-200000).toISOString()}).eq('id',profile.id); });
+    }
+
+    function switchAuthTab(tab){
+        const isLogin=tab==='login';
+        document.getElementById('loginForm').classList.toggle('hidden',!isLogin);
+        document.getElementById('registerForm').classList.toggle('hidden',isLogin);
+        document.getElementById('tabLogin').classList.toggle('text-primary',isLogin);
+        document.getElementById('tabLogin').classList.toggle('border-primary',isLogin);
+        document.getElementById('tabLogin').classList.toggle('text-on-surface-variant',!isLogin);
+        document.getElementById('tabLogin').classList.toggle('border-transparent',!isLogin);
+        document.getElementById('tabRegister').classList.toggle('text-primary',!isLogin);
+        document.getElementById('tabRegister').classList.toggle('border-primary',!isLogin);
+        document.getElementById('tabRegister').classList.toggle('text-on-surface-variant',isLogin);
+        document.getElementById('tabRegister').classList.toggle('border-transparent',isLogin);
+    }
+
+    document.addEventListener('DOMContentLoaded',init);
+</script>
+</body></html>
