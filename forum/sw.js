@@ -7,7 +7,7 @@
    olmalıdır — statik önbellek verinin bayatlamasına yol açmamalıdır.
    ================================================================= */
 
-const CACHE_VERSION = 'dmoz-qa-v1';
+const CACHE_VERSION = 'dmoz-qa-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 
 // İlk kurulumda önbelleğe alınacak temel dosyalar
