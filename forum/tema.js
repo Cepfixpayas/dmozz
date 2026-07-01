@@ -190,7 +190,7 @@
                         <img src="${profile.avatar_url}" class="w-full h-full object-cover" alt="Profil"/>
                     </span>
                 </button>`;
-            document.getElementById('profileMenuBtn').addEventListener('click',()=>{ window.location.href='/forum/?u='+profile.username; });
+            document.getElementById('profileMenuBtn').addEventListener('click',()=>{ window.location.href='/forum/?u='+encodeURIComponent(profile.username); });
             loadUnreadCounts();
         } else {
             msgBtn.classList.add('hidden'); adminBtn.classList.add('hidden');
@@ -327,9 +327,12 @@
         try{
             const { data:q,error }=await supabaseClient.from('questions').select('*').eq('id',id).single();
             if(error||!q) throw error||new Error('not found');
-            let authorP=null;
-            if(q.author_id){ const { data }=await supabaseClient.from('profiles').select('username,avatar_url,verified,created_at,city,zodiac,profession').eq('id',q.author_id).maybeSingle(); authorP=data; }
-            const { data:answersForSchema }=await supabaseClient.from('answers').select('content,author,created_at,votes').eq('question_id',q.id).order('votes',{ascending:false}).limit(50);
+            const [authorRes,answersRes]=await Promise.all([
+                q.author_id?supabaseClient.from('profiles').select('username,avatar_url,verified,created_at,city,zodiac,profession').eq('id',q.author_id).maybeSingle():Promise.resolve({data:null}),
+                supabaseClient.from('answers').select('content,author,created_at,votes').eq('question_id',q.id).order('votes',{ascending:false}).limit(50)
+            ]);
+            const authorP=authorRes.data;
+            const answersForSchema=answersRes.data;
             injectSchema(q,answersForSchema);
             document.getElementById('breadcrumbCurrent').innerText=q.title.slice(0,40);
             const liked = profile ? await hasLiked(q.id) : false;
@@ -493,8 +496,10 @@
                 ]
             }
         ]);
-        const { data:questions }=await supabaseClient.from('questions').select('*').eq('author_id',p.id).order('created_at',{ascending:false});
-        const { data:answers }=await supabaseClient.from('answers').select('*,questions(title,id,category)').eq('author_id',p.id).order('created_at',{ascending:false});
+        const [{ data:questions },{ data:answers }]=await Promise.all([
+            supabaseClient.from('questions').select('*').eq('author_id',p.id).order('created_at',{ascending:false}),
+            supabaseClient.from('answers').select('*,questions(title,id,category)').eq('author_id',p.id).order('created_at',{ascending:false})
+        ]);
         const online=isOnline(p.last_seen);
         const isMe=profile&&profile.id===p.id;
         const social=[
@@ -574,10 +579,14 @@
     /* ---------------- BİLDİRİM / MESAJ SAYAÇLARI ---------------- */
     async function loadUnreadCounts(){
         if(!profile) return;
-        const { count:nc }=await supabaseClient.from('notifications').select('*',{count:'exact',head:true}).eq('user_id',profile.id).eq('read',false);
+        const [{ count:nc },{ count:mc }]=await Promise.all([
+            supabaseClient.from('notifications').select('*',{count:'exact',head:true}).eq('user_id',profile.id).eq('read',false),
+            supabaseClient.from('messages').select('*',{count:'exact',head:true}).eq('receiver_id',profile.id).eq('read',false)
+        ]);
         const nd=document.getElementById('notificationDot');
         nd.innerText=nc||0; nd.classList.toggle('hidden',!nc); nd.classList.toggle('flex',!!nc);
-        const { count:mc }=await supabaseClient.from('messages').select('*',{count:'exact',head:true}).eq('receiver_id',profile.id).eq('read',false);
+        document.getElementById('notifPulseDot')?.classList.toggle('hidden',!nc);
+        document.getElementById('mobileNotifDot')?.classList.toggle('hidden',!nc);
         const mb=document.getElementById('messageBadge');
         mb.innerText=mc||0; mb.classList.toggle('hidden',!mc); mb.classList.toggle('flex',!!mc);
     }
@@ -717,17 +726,19 @@
 
     /* ---------------- SIDEBAR VERİLERİ ---------------- */
     async function loadSidebarData(){
-        const { count:qc }=await supabaseClient.from('questions').select('*',{count:'exact',head:true});
-        document.getElementById('statTotalQuestions').innerText=qc||0;
-        const { count:ac }=await supabaseClient.from('answers').select('*',{count:'exact',head:true});
-        document.getElementById('statTotalAnswers').innerText=ac||0;
-        const { count:uc }=await supabaseClient.from('profiles').select('*',{count:'exact',head:true});
-        document.getElementById('statActiveExperts').innerText=uc||0;
         const since=new Date(Date.now()-120000).toISOString();
-        const { data:online }=await supabaseClient.from('profiles').select('username,avatar_url').gt('last_seen',since).limit(8);
+        const [{ count:qc },{ count:ac },{ count:uc },{ data:online }]=await Promise.all([
+            supabaseClient.from('questions').select('*',{count:'exact',head:true}),
+            supabaseClient.from('answers').select('*',{count:'exact',head:true}),
+            supabaseClient.from('profiles').select('*',{count:'exact',head:true}),
+            supabaseClient.from('profiles').select('username,avatar_url').gt('last_seen',since).limit(8)
+        ]);
+        document.getElementById('statTotalQuestions').innerText=qc||0;
+        document.getElementById('statTotalAnswers').innerText=ac||0;
+        document.getElementById('statActiveExperts').innerText=uc||0;
         const ul=document.getElementById('onlineUsers');
         ul.innerHTML=(online&&online.length)?online.map(u=>`
-            <li class="flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="window.location.href='/forum/?u=${u.username}'">
+            <li class="flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="window.location.href='/forum/?u=${encodeURIComponent(u.username)}'">
                 <div class="relative"><img src="${u.avatar_url}" class="w-7 h-7 rounded-full object-cover" alt="" loading="lazy" decoding="async"/><span class="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-inverse-surface online-dot"></span></div>
                 <span class="text-xs text-white/80">@${escapeHtml(u.username)}</span>
             </li>`).join('') : '<li class="text-white/40 text-xs">Şu an çevrimiçi üye yok.</li>';
@@ -778,10 +789,15 @@
             "answerCount":q.answer_count||0,
             "upvoteCount":q.votes||0,
             "datePublished":q.created_at,
+            "dateModified":q.updated_at||q.created_at,
             "url":url,
             "author":{ "@type":"Person","name":q.author||"anonim","url":authorUrl }
         };
-        if(answerList.length) questionNode.suggestedAnswer=answerList;
+        if(answerList.length){
+            const top=answerList[0];
+            if(top.upvoteCount>0){ questionNode.acceptedAnswer=top; questionNode.suggestedAnswer=answerList.slice(1); }
+            else questionNode.suggestedAnswer=answerList;
+        }
 
         const qaSchema={ "@context":"https://schema.org","@type":"QAPage","mainEntity":questionNode };
 
@@ -819,7 +835,9 @@
         const webPageSchema={
             "@context":"https://schema.org","@type":"WebPage",
             "name":q.title,"url":url,"description":desc,"inLanguage":"tr-TR",
-            "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' }
+            "datePublished":q.created_at,"dateModified":q.updated_at||q.created_at,
+            "isPartOf":{ "@type":"WebSite","name":"DMOZ Q&A","url":SITE_ORIGIN+'/forum/' },
+            "publisher":{ "@type":"Organization","name":"DMOZ Q&A","url":SITE_ORIGIN+"/forum/","logo":{ "@type":"ImageObject","url":SITE_ORIGIN+"/forum/og-cover.png" } }
         };
 
         const schemas=[qaSchema,discussionSchema,breadcrumbSchema,webPageSchema];
@@ -929,23 +947,16 @@
             const title=document.getElementById('qTitle').value.trim();
             const content=document.getElementById('richEditor').innerHTML.trim();
             let category=document.getElementById('qCategory').value;
-            const newCat=document.getElementById('qNewCategory').value.trim();
             let tags=document.getElementById('qTags').value.trim();
             if(!title||!content){ showToast('Eksik Bilgi','Başlık ve içerik zorunludur.','warning',true); return; }
             try{
-                if(newCat){
-                    const slug=slugify(newCat);
-                    const { error:ce }=await supabaseClient.from('categories').insert([{ name:newCat, slug }]);
-                    if(!ce){ category=slug; await loadCategories(); }
-                    else { const ex=categoriesCache.find(c=>c.slug===slug); if(ex) category=slug; }
-                }
                 if(!tags) tags=title.split(' ').filter(w=>w.length>4).slice(0,3).join(', ');
-                const { error }=await supabaseClient.from('questions').insert([{ title, content, category, tags, author:profile.username, author_id:profile.id, views:0, votes:0, answer_count:0 }]);
+                const { data:inserted, error }=await supabaseClient.from('questions').insert([{ title, content, category, tags, author:profile.username, author_id:profile.id, views:0, votes:0, answer_count:0 }]).select().single();
                 if(error) throw error;
                 toggleModal('questionModal',false);
                 showToast('Başarılı','Konunuz yayınlandı!');
                 e.target.reset(); document.getElementById('richEditor').innerHTML='';
-                if(!new URLSearchParams(location.search).get('s')) loadLatestQuestions();
+                window.location.href=buildUrl(inserted);
             }catch(err){ console.error('[v0] post question',err); showToast('Hata','Konu gönderilemedi.','error',true); }
         });
 
@@ -1046,7 +1057,7 @@
         document.getElementById('adminBtn').addEventListener('click',openAdmin);
         document.getElementById('mobileNotifBtn').addEventListener('click',openNotifications);
         document.getElementById('mobileMsgBtn').addEventListener('click',openMessages);
-        document.getElementById('mobileProfileBtn').addEventListener('click',()=>{ if(profile) window.location.href='/forum/?u='+profile.username; else toggleModal('authModal',true); });
+        document.getElementById('mobileProfileBtn').addEventListener('click',()=>{ if(profile) window.location.href='/forum/?u='+encodeURIComponent(profile.username); else toggleModal('authModal',true); });
         document.getElementById('drawerOverlay').addEventListener('click',closeDrawers);
         document.querySelectorAll('.close-drawer').forEach(b=>b.addEventListener('click',closeDrawers));
         document.getElementById('msgBackBtn').addEventListener('click',showConversationList);
@@ -1084,9 +1095,12 @@
         // Arama (masaüstü + mobil ortak)
         function wireSearch(inputEl,resultsEl,badgeEl){
             if(!inputEl||!resultsEl) return;
-            inputEl.addEventListener('input',async(e)=>{
+            let debounceTimer=null;
+            inputEl.addEventListener('input',(e)=>{
+                clearTimeout(debounceTimer);
                 const val=e.target.value.trim();
-                if(val.length>2){
+                if(val.length<=2){ resultsEl.classList.add('hidden'); badgeEl?.classList.replace('flex','hidden'); return; }
+                debounceTimer=setTimeout(async()=>{
                     badgeEl?.classList.replace('hidden','flex');
                     const { data }=await supabaseClient.from('questions').select('id,title,category').ilike('title',`%${val}%`).limit(8);
                     resultsEl.classList.remove('hidden');
@@ -1095,7 +1109,7 @@
                             <span class="material-symbols-outlined text-primary text-sm">search</span>
                             <span class="text-sm text-on-surface-variant font-medium line-clamp-1">${escapeHtml(q.title)}</span>
                         </div>`).join('') : '<div class="p-3 text-xs text-outline italic">Sonuç bulunamadı.</div>';
-                } else { resultsEl.classList.add('hidden'); badgeEl?.classList.replace('flex','hidden'); }
+                },300);
             });
         }
         wireSearch(document.getElementById('ajaxSearch'),document.getElementById('searchResults'),document.getElementById('searchBadge'));

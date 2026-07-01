@@ -13,7 +13,7 @@
      mümkün olan en katı ayardır. Gerçek koruma için sunucu/CDN seviyesinde
      Content-Security-Policy, X-Content-Type-Options ve X-Frame-Options HTTP
      header'larının da eklenmesi şiddetle önerilir (statik dosyadan eklenemezler). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://qfilqgbtubvafcnpwtqj.supabase.co wss://qfilqgbtubvafcnpwtqj.supabase.co; frame-ancestors 'self'; base-uri 'self'; object-src 'none'"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https: blob:; frame-src https://www.youtube.com; connect-src 'self' https://qfilqgbtubvafcnpwtqj.supabase.co wss://qfilqgbtubvafcnpwtqj.supabase.co; frame-ancestors 'self'; base-uri 'self'; object-src 'none'"/>
 <link rel="canonical" href="https://dmozz.eu.cc/forum/" id="canonicalLink"/>
 <link rel="alternate" hreflang="tr" href="https://dmozz.eu.cc/forum/"/>
 <link rel="alternate" hreflang="x-default" href="https://dmozz.eu.cc/forum/"/>
@@ -188,6 +188,7 @@
 <!-- Notifications -->
 <button aria-label="Bildirimler" class="relative max-md:hidden hover:bg-primary-container/20 transition-colors p-2 rounded-full active:scale-95" id="notificationsBtn">
 <span class="material-symbols-outlined text-2xl">notifications</span>
+<span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full notif-dot notif-blink hidden" id="notifPulseDot"></span>
 <span class="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-error rounded-full border-2 border-surface hidden items-center justify-center text-[10px] text-white font-bold" id="notificationDot">0</span>
 </button>
 <!-- Admin -->
@@ -297,8 +298,8 @@
 <span class="material-symbols-outlined text-on-primary-container text-3xl">add</span>
 </div>
 </button>
-<button class="flex flex-col items-center justify-center text-on-surface-variant" id="mobileNotifBtn">
-<span class="material-symbols-outlined">notifications</span><span class="font-label-sm text-label-sm">Bildirim</span>
+<button class="flex flex-col items-center justify-center text-on-surface-variant relative" id="mobileNotifBtn">
+<span class="relative inline-flex"><span class="material-symbols-outlined">notifications</span><span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full notif-dot notif-blink hidden" id="mobileNotifDot"></span></span><span class="font-label-sm text-label-sm">Bildirim</span>
 </button>
 <button class="flex flex-col items-center justify-center text-on-surface-variant" id="mobileProfileBtn">
 <span class="material-symbols-outlined">person</span><span class="font-label-sm text-label-sm">Profil</span>
@@ -362,15 +363,9 @@
 <label class="block text-label-md font-label-md text-on-surface-variant mb-2">Konu Başlığı</label>
 <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qTitle" name="title" placeholder="Merak ettiğiniz konuyu kısaca belirtin..." required type="text"/>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
 <label class="block text-label-md font-label-md text-on-surface-variant mb-2">Kategori</label>
 <select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qCategory" name="category"></select>
-</div>
-<div>
-<label class="block text-label-md font-label-md text-on-surface-variant mb-2">Yeni Kategori (opsiyonel)</label>
-<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none" id="qNewCategory" placeholder="Kategori yoksa ekle..." type="text"/>
-</div>
 </div>
 <!-- Rich Editor Toolbar -->
 <div>
