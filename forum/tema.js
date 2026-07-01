@@ -62,8 +62,8 @@
         t.classList.remove('translate-y-32','opacity-0');
         clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.add('translate-y-32','opacity-0'),4000);
     }
-    function buildUrl(q){ return `/forum/${q.id}/${q.category||'genel'}/${slugify(q.title)}.html`; }
-    function buildCategoryUrl(slug){ return `/forum/kategori/${encodeURIComponent(slug)}.html`; }
+    function buildUrl(q){ return `/forum/?s=${q.id}/${q.category||'genel'}/${slugify(q.title)}.html`; }
+    function buildCategoryUrl(slug){ return `/forum/?category=${encodeURIComponent(slug)}`; }
     function isStaff(){ return profile && (profile.role==='admin'||profile.role==='moderator'); }
     function isAdmin(){ return profile && profile.role==='admin'; }
     function verifiedBadge(p){ return p && p.verified ? `<span class="material-symbols-outlined verified-tick text-base align-middle" title="Onaylı üye" style="font-variation-settings:'FILL' 1">verified</span>` : ''; }
@@ -346,9 +346,9 @@
             loadAnswers(qid);
             supabaseClient.rpc('increment_answer_count',{q_id:qid});
             // soru sahibine bildirim
-            const { data:q }=await supabaseClient.from('questions').select('author_id,title').eq('id',qid).single();
+            const { data:q }=await supabaseClient.from('questions').select('author_id,title,category').eq('id',qid).single();
             if(q&&q.author_id&&q.author_id!==profile.id){
-                await supabaseClient.from('notifications').insert([{ user_id:q.author_id, type:'answer', content:`@${profile.username} sorunuza cevap verdi: ${q.title.slice(0,40)}`, link:`/forum/${qid}/genel/x.html` }]);
+                await supabaseClient.from('notifications').insert([{ user_id:q.author_id, type:'answer', content:`@${profile.username} sorunuza cevap verdi: ${q.title.slice(0,40)}`, link:buildUrl({id:qid,category:q.category,title:q.title}) }]);
             }
             const lbl=document.getElementById('answerCountLabel'); if(lbl) lbl.innerText=parseInt(lbl.innerText||'0')+1;
         }catch(err){ console.error('[v0] answer error',err); showToast('Hata','Cevap gönderilemedi.','error',true); }
@@ -372,9 +372,9 @@
             await supabaseClient.from('likes').insert([{ user_id:profile.id, question_id:qid }]);
             n=n+1; btn.classList.add('bg-primary','text-white'); btn.classList.remove('bg-surface-container');
             btn.querySelector('.material-symbols-outlined').style.fontVariationSettings="'FILL' 1";
-            const { data:q }=await supabaseClient.from('questions').select('author_id,title').eq('id',qid).single();
+            const { data:q }=await supabaseClient.from('questions').select('author_id,title,category').eq('id',qid).single();
             if(q&&q.author_id&&q.author_id!==profile.id){
-                await supabaseClient.from('notifications').insert([{ user_id:q.author_id, type:'like', content:`@${profile.username} sorunuzu beğendi`, link:`/forum/${qid}/genel/x.html` }]);
+                await supabaseClient.from('notifications').insert([{ user_id:q.author_id, type:'like', content:`@${profile.username} sorunuzu beğendi`, link:buildUrl({id:qid,category:q.category,title:q.title}) }]);
             }
         }
         cnt.innerText=n;
@@ -448,7 +448,7 @@
             <div class="mt-6">
                 <h3 class="font-headline-md font-bold text-on-surface mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-primary">question_answer</span>Verdiği Cevaplar</h3>
                 <div class="space-y-2">${answers&&answers.length?answers.map(a=>`
-                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 hover:border-primary/30 cursor-pointer" onclick="window.location.href='/forum/${a.questions?.id}/${a.questions?.category||'genel'}/x.html'">
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 hover:border-primary/30 cursor-pointer" onclick="window.location.href='${a.questions?.id?buildUrl({id:a.questions.id,category:a.questions.category,title:a.questions.title||''}):'/forum/'}'">
                         <p class="text-xs text-secondary font-bold mb-1">${escapeHtml(a.questions?.title||'Soru')}</p>
                         <p class="text-sm text-on-surface-variant line-clamp-2">${escapeHtml(a.content)}</p>
                     </div>`).join(''):'<p class="text-on-surface-variant/60 italic text-sm">Henüz cevap verilmemiş.</p>'}</div>

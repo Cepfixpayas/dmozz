@@ -6,38 +6,38 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/kategori/yazilim.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?category=yazilim</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/kategori/donanim.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?category=donanim</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/kategori/yapay-zeka.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?category=yapay-zeka</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/kategori/kariyer.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?category=kariyer</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/kategori/genel.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?category=genel</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/1/genel/merhaba-dunya.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?s=1/genel/merhaba-dunya.html</loc>
     <lastmod>2026-06-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dmozz.eu.cc/forum/2/genel/video-deneme-yotube.html</loc>
+    <loc>https://dmozz.eu.cc/forum/?s=2/genel/video-deneme-yotube.html</loc>
     <lastmod>2026-06-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>

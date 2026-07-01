@@ -77,7 +77,7 @@ async function main() {
 
   for (const c of categories) {
     urls.push(urlEntry(
-      `${SITE_ORIGIN}/forum/kategori/${encodeURIComponent(c.slug)}.html`,
+      `${SITE_ORIGIN}/forum/?category=${encodeURIComponent(c.slug)}`,
       { changefreq: 'daily', priority: '0.7' }
     ));
   }
@@ -87,7 +87,7 @@ async function main() {
     const slug = slugify(q.title) || 'soru';
     const lastmod = (q.created_at || '').slice(0, 10) || undefined;
     urls.push(urlEntry(
-      `${SITE_ORIGIN}/forum/${q.id}/${encodeURIComponent(cat)}/${slug}.html`,
+      `${SITE_ORIGIN}/forum/?s=${q.id}/${encodeURIComponent(cat)}/${slug}.html`,
       { changefreq: 'weekly', priority: '0.6', lastmod }
     ));
   }
